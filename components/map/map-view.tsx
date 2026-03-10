@@ -169,16 +169,16 @@ export default function MapView({ onMove }: MapViewProps) {
         />
       </Map>
 
-      {/* Category filter bar and search — positioned top-left over the map */}
-      <div className="pointer-events-none absolute left-0 top-14 z-20 flex w-full flex-col gap-2 px-3 md:w-96 md:px-4">
-        <CategoryFilterBar
-          activeCategories={activeCategories}
-          onToggleCategory={handleToggleCategory}
-        />
+      {/* Category filter bar and search — positioned top-right over the map */}
+      <div className="pointer-events-none absolute right-0 top-14 z-20 flex w-full flex-col gap-2 px-3 md:w-96 md:px-4">
         <SearchBar
           places={places}
           activeCategories={activeCategories}
           onSelectPlace={handleSelectPlace}
+        />
+        <CategoryFilterBar
+          activeCategories={activeCategories}
+          onToggleCategory={handleToggleCategory}
         />
       </div>
 
