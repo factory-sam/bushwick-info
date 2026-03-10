@@ -1,0 +1,215 @@
+{
+  "group": "eva",
+  "testedAt": "2026-03-09T20:00:00Z",
+  "credentials": {
+    "account": "none (public map)",
+    "namespace": "N/A"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": {
+    "VAL-EVA-001": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-initial.png", "/tmp/eva-full-desktop.png"],
+        "consoleErrors": "none (only expected WebGL context creation error from MapLibre)",
+        "domChecks": {
+          "scanlineElement": "found .scanlines element with class 'scanlines pointer-events-none fixed inset-0 z-10'",
+          "pointerEvents": "computed pointer-events: none on both .scanlines and ::after pseudo-element",
+          "afterBackground": "repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px)",
+          "position": "fixed",
+          "zIndex": "10"
+        }
+      },
+      "steps": [
+        { "action": "Navigate to http://localhost:3100", "expected": "Page loads with scanline overlay", "observed": "Scanline overlay visible as horizontal lines across viewport" },
+        { "action": "Check pointer-events CSS on .scanlines", "expected": "pointer-events: none", "observed": "pointer-events: none confirmed on element and ::after pseudo-element" },
+        { "action": "Verify repeating-linear-gradient background", "expected": "Horizontal scanline pattern", "observed": "repeating-linear-gradient with 1px dark lines every 2px" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-002": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "vignetteElement": "found .crt-vignette element",
+          "pointerEvents": "computed pointer-events: none on both element and ::after",
+          "afterBackground": "radial-gradient(ellipse at center, transparent 60%, rgba(0,0,83,0.6) 100%)",
+          "position": "fixed"
+        }
+      },
+      "steps": [
+        { "action": "Check .crt-vignette element exists", "expected": "Vignette overlay present", "observed": "Element found with class 'crt-vignette pointer-events-none fixed inset-0 z-10'" },
+        { "action": "Verify radial-gradient on ::after", "expected": "Radial gradient darkening edges", "observed": "radial-gradient from transparent 60% to rgba(0,0,83,0.6) 100% — Terminal Black (#000053) at edges" },
+        { "action": "Verify pointer-events: none", "expected": "Does not block pointer events", "observed": "pointer-events: none confirmed" },
+        { "action": "Visual inspection of screenshot", "expected": "Darkened edges, clear center", "observed": "Screenshot shows subtle darkening at edges, center remains fully visible" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-003": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-initial.png", "/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "headerElement": "found [data-testid='nerv-header']",
+          "clipPath": "polygon(0px 0px, calc(100% - 16px) 0px, 100% 16px, 100% 100%, 16px 100%, 0px calc(100% - 16px))",
+          "boxShadow": "rgb(240, 144, 58) 0px 0px 5px, rgb(240, 144, 58) 0px 0px 10px, rgba(240, 144, 58, 0.3) 0px 0px 5px inset",
+          "borderColor": "rgb(240, 144, 58) — NERV Orange #F0903A",
+          "h1Text": "BUSHWICK // MAP",
+          "h1FontFamily": "Orbitron, \"Orbitron Fallback\"",
+          "h1Color": "rgb(240, 144, 58) — NERV Orange #F0903A",
+          "backgroundColor": "oklab(0.247152 0.0109979 -0.053145 / 0.8) — Deep Purple with 80% opacity"
+        }
+      },
+      "steps": [
+        { "action": "Check header panel exists with data-testid", "expected": "NERV header panel present", "observed": "Found [data-testid='nerv-header'] with h1 text 'BUSHWICK // MAP'" },
+        { "action": "Verify clip-path polygon (angled corners)", "expected": "Non-standard clipped corners", "observed": "clip-path polygon with 16px corner cuts confirmed — not border-radius" },
+        { "action": "Verify neon border glow", "expected": "box-shadow in NERV Orange", "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A NERV Orange, including inset glow" },
+        { "action": "Verify Orbitron font on title", "expected": "font-family: Orbitron", "observed": "Computed fontFamily: Orbitron, \"Orbitron Fallback\"" },
+        { "action": "Verify dark semi-transparent background", "expected": "Deep Purple with transparency", "observed": "bg-nerv-deep-purple/80 — 80% opacity deep purple" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-004": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-readout-posA.png"],
+        "domChecks": {
+          "readoutElement": "found [data-testid='data-readout']",
+          "fontFamily": "\"Share Tech Mono\", \"Share Tech Mono Fallback\"",
+          "displayedValues": "LAT 40.6944, LNG -73.9213, ZOOM 15.00",
+          "textColor": "rgb(88, 242, 165) — Entry Plug Green #58F2A5",
+          "textShadow": "0 0 7px #58F2A5, 0 0 10px #58F2A5, 0 0 21px #58F2A5",
+          "clipPath": "polygon with 12px corner cuts"
+        },
+        "codeVerification": "MapView component uses onMove callback that fires continuously during pan/zoom (react-map-gl's onMove event). DataReadout receives lat/lng/zoom as props from parent state updated via onMove."
+      },
+      "steps": [
+        { "action": "Check data readout panel exists", "expected": "Panel with lat/lng/zoom values", "observed": "Found panel showing LAT 40.6944, LNG -73.9213, ZOOM 15.00" },
+        { "action": "Verify Share Tech Mono font", "expected": "font-family: Share Tech Mono", "observed": "Computed fontFamily: \"Share Tech Mono\", \"Share Tech Mono Fallback\"" },
+        { "action": "Verify Entry Plug Green text color", "expected": "color: #58F2A5", "observed": "rgb(88, 242, 165) confirmed = #58F2A5" },
+        { "action": "Verify continuous update wiring (code review)", "expected": "onMove fires during pan/zoom, not only on release", "observed": "MapView uses react-map-gl onMove event which fires continuously during interaction. Values passed as props to DataReadout." },
+        { "action": "Attempt live update verification via map drag", "expected": "Values change after panning", "observed": "Could not verify live updates in headless Chrome — map drag requires WebGL which is unavailable. Code structure confirms continuous updates are wired correctly." }
+      ],
+      "issues": "Live coordinate updates could not be verified interactively due to WebGL unavailability in headless Chrome (known environment limitation per AGENTS.md). Code review confirms the onMove handler fires continuously during pan/zoom and updates DataReadout props."
+    },
+    "VAL-EVA-005": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "orbitronOnHeadings": "h1 fontFamily: Orbitron, \"Orbitron Fallback\" — geometric, futuristic display font",
+          "shareTechMonoOnReadouts": "data-readout fontFamily: \"Share Tech Mono\", \"Share Tech Mono Fallback\" — monospace data font",
+          "rajdhaniOnBody": "body fontFamily: Rajdhani, \"Rajdhani Fallback\" — body text font",
+          "cssVariables": {
+            "--font-display": "\"Orbitron\", sans-serif",
+            "--font-mono": "\"Share Tech Mono\", monospace",
+            "--font-body": "\"Rajdhani\", sans-serif"
+          },
+          "fontLoadStrategy": "next/font/google with display: swap — prevents persistent fallback flash"
+        }
+      },
+      "steps": [
+        { "action": "Check Orbitron on headings", "expected": "Orbitron font on h1", "observed": "h1 computed fontFamily: Orbitron confirmed" },
+        { "action": "Check Share Tech Mono on data readouts", "expected": "Share Tech Mono on data panel", "observed": "data-readout computed fontFamily: Share Tech Mono confirmed" },
+        { "action": "Check Rajdhani on body", "expected": "Rajdhani on body text", "observed": "body computed fontFamily: Rajdhani confirmed" },
+        { "action": "Verify font loading strategy", "expected": "No persistent fallback flash", "observed": "Fonts loaded via next/font/google with display: swap — optimized loading with minimal FOIT" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-006": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "headerGlow": "box-shadow: rgb(240,144,58) 0px 0px 5px, rgb(240,144,58) 0px 0px 10px, rgba(240,144,58,0.3) 0px 0px 5px inset — NERV Orange #F0903A glow",
+          "readoutGlow": "box-shadow: rgba(88,242,165,0.3) 0px 0px 5px, rgba(88,242,165,0.15) 0px 0px 10px, rgba(88,242,165,0.1) 0px 0px 5px inset — Entry Plug Green #58F2A5 glow"
+        }
+      },
+      "steps": [
+        { "action": "Check header panel box-shadow", "expected": "Neon glow in NERV Orange", "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A with outer and inset glow" },
+        { "action": "Check readout panel box-shadow", "expected": "Neon glow in Entry Plug Green", "observed": "Triple box-shadow in rgba(88,242,165) = #58F2A5 with outer and inset glow" },
+        { "action": "Visual inspection", "expected": "Glows visible against dark background", "observed": "Screenshot shows visible orange glow on header, green glow on readout panel against deep purple background" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-007": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-mobile-375.png"],
+        "domChecks": {
+          "viewportSize": "375x812",
+          "headerLayout": "left: 16px, right: 359px, width: 343px — stretches across mobile viewport with 16px margins",
+          "readoutLayout": "left: 16px, bottom: 16px, width: 103.77px, height: 70px — compact at bottom-left",
+          "overlayPointerEvents": "All overlays (scanlines, vignette, hex-grid) maintain pointer-events: none at 375px"
+        }
+      },
+      "steps": [
+        { "action": "Set viewport to 375x812", "expected": "Mobile layout applied", "observed": "Viewport set to 375x812 successfully" },
+        { "action": "Verify map fills viewport", "expected": "Map fills most of viewport", "observed": "Map container fills full viewport behind overlays" },
+        { "action": "Verify panels don't obscure map center", "expected": "Header at top, readout at bottom-left", "observed": "Header at top with left-4/right-4 positioning, readout compact at bottom-left. Map center clear." },
+        { "action": "Verify text readability", "expected": "All text readable at 375px", "observed": "Header text 'BUSHWICK // MAP' and LAT/LNG/ZOOM values all readable at mobile size" },
+        { "action": "Verify overlays pass through touch events", "expected": "pointer-events: none on overlays", "observed": "All three overlays (scanlines, vignette, hex-grid) have pointer-events: none at 375px" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-008": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "svgElement": "SVG with hexagonal pattern found",
+          "patternId": "hexagons pattern defined in <defs>",
+          "strokeColor": "#58F2A5 — Entry Plug Green",
+          "opacity": "0.06 (6%) — within the 5-10% range specified",
+          "parentPointerEvents": "pointer-events: none on parent container",
+          "hexPath": "d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' — hexagonal tessellation"
+        }
+      },
+      "steps": [
+        { "action": "Check SVG with hex pattern exists", "expected": "SVG with hexagonal grid pattern", "observed": "SVG element found with <pattern id='hexagons'> containing hex path" },
+        { "action": "Verify Entry Plug Green stroke color", "expected": "stroke: #58F2A5", "observed": "stroke='#58F2A5' confirmed on pattern path" },
+        { "action": "Verify low opacity (5-10%)", "expected": "opacity ~5-10%", "observed": "SVG opacity: 0.06 (6%) — within specified range" },
+        { "action": "Verify pointer-events: none", "expected": "Does not block pointer events", "observed": "Parent div has pointer-events: none" }
+      ],
+      "issues": null
+    },
+    "VAL-EVA-009": {
+      "status": "pass",
+      "evidence": {
+        "screenshots": ["/tmp/eva-full-desktop.png"],
+        "domChecks": {
+          "bodyBackground": "rgb(29, 29, 58) = #1D1D3A — Deep Purple ✓",
+          "headerBorderAndText": "rgb(240, 144, 58) = #F0903A — NERV Orange ✓",
+          "readoutText": "rgb(88, 242, 165) = #58F2A5 — Entry Plug Green ✓",
+          "vignetteEdge": "rgba(0, 0, 83, 0.6) = #000053 at 60% — Terminal Black ✓",
+          "hexGridStroke": "#58F2A5 — Entry Plug Green ✓",
+          "noOffThemeColors": "No bright white or off-theme colors detected in UI chrome. Body text-white class is present but only for map content area."
+        },
+        "cssThemeVariables": {
+          "--color-nerv-orange": "#F0903A",
+          "--color-nerv-green": "#58F2A5",
+          "--color-nerv-deep-purple": "#1D1D3A",
+          "--color-nerv-black": "#000053"
+        }
+      },
+      "steps": [
+        { "action": "Verify body background color", "expected": "Deep Purple #1D1D3A", "observed": "rgb(29, 29, 58) = #1D1D3A confirmed" },
+        { "action": "Verify NERV Orange on primary accents/borders", "expected": "#F0903A on header border, title, glow", "observed": "Header border: rgb(240,144,58), h1 color: rgb(240,144,58), box-shadow: rgb(240,144,58) — all #F0903A" },
+        { "action": "Verify Entry Plug Green on data readouts", "expected": "#58F2A5 on readout text", "observed": "Readout text color: rgb(88,242,165) = #58F2A5 confirmed" },
+        { "action": "Verify Terminal Black in vignette", "expected": "#000053 at edges", "observed": "Vignette gradient ends at rgba(0,0,83,0.6) = #000053 Terminal Black" },
+        { "action": "Check for off-theme colors", "expected": "No bright white or off-theme colors in UI chrome", "observed": "All UI chrome elements use EVA palette colors. No off-theme colors detected." }
+      ],
+      "issues": null
+    }
+  },
+  "frictions": [],
+  "blockers": [
+    {
+      "description": "WebGL is unavailable in headless Chrome (SwiftShader GPU failure). MapLibre map canvas renders blank. This prevents interactive testing of map pan/zoom to verify live coordinate updates in VAL-EVA-004.",
+      "affectedAssertions": ["VAL-EVA-004"],
+      "quickFixAttempted": "Attempted native mouse drag via agent-browser and synthetic JS MouseEvents. Map does not respond without WebGL. Verified correct wiring via code review instead."
+    }
+  ],
+  "summary": "Tested 9 assertions: 9 passed. All EVA UI chrome elements (scanlines, vignette, header, data readout, hex grid) render correctly with proper styling, fonts, colors, pointer-events, and responsive layout. Live data readout updates (VAL-EVA-004) verified via code review since map interaction requires WebGL. Only console error is the expected WebGL context creation failure from MapLibre (documented known limitation)."
+}

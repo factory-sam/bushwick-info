@@ -1,0 +1,283 @@
+{
+  "group": "map",
+  "testedAt": "2026-03-09T20:00:00Z",
+  "credentials": {
+    "account": "none (public map)",
+    "namespace": "N/A (read-only tests)"
+  },
+  "toolsUsed": ["agent-browser", "curl"],
+  "assertions": {
+    "VAL-MAP-001": {
+      "status": "blocked",
+      "title": "Map loads centered on Bushwick with dark theme",
+      "steps": [
+        {
+          "action": "Navigate to http://localhost:3100",
+          "expected": "Page loads with MapLibre GL map",
+          "observed": "Page loads, MapLibre map DOM elements mount (.maplibregl-map, .maplibregl-canvas exist). Map instance fails to initialize due to WebGL context creation error (SwiftShader Vulkan driver)."
+        },
+        {
+          "action": "Verify map center coordinates via React props",
+          "expected": "Center ~40.694°N, 73.921°W",
+          "observed": "React Map component props: latitude=40.6944, longitude=-73.9213 — correct Bushwick coordinates"
+        },
+        {
+          "action": "Verify zoom level via React props",
+          "expected": "Zoom ~15",
+          "observed": "React Map component props: zoom=15 — correct"
+        },
+        {
+          "action": "Verify dark color scheme via map style JSON",
+          "expected": "Deep purple/black background, no white areas",
+          "observed": "Map style background-color=#1D1D3A (Deep Purple), main element computed bg=rgb(29,29,58) — correct dark theme. All land/water/park layers use dark colors."
+        },
+        {
+          "action": "Verify tile source URL",
+          "expected": "tiles.openfreemap.org configured and reachable",
+          "observed": "Map style source URL=https://tiles.openfreemap.org/planet. curl to tiles.openfreemap.org/planet returns HTTP 200. However, no tile requests were made in browser because map instance failed to initialize (WebGL unavailable)."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-initial-load.png", "map-annotated.png"],
+        "consoleErrors": "WebGL context creation error: SwiftShader Vulkan driver cannot create WebGL context. This is a known headless Chrome environment limitation, not a code bug.",
+        "network": "No tile requests made (map instance null due to WebGL failure). curl to tiles.openfreemap.org/planet returns 200.",
+        "jsEvaluation": {
+          "mapProps": {
+            "latitude": 40.6944,
+            "longitude": -73.9213,
+            "zoom": 15,
+            "pitch": 50,
+            "bearing": -15,
+            "minZoom": 12,
+            "maxZoom": 18
+          },
+          "mapStyle": {
+            "backgroundColor": "#1D1D3A",
+            "tileSourceUrl": "https://tiles.openfreemap.org/planet",
+            "layerCount": 50
+          }
+        },
+        "domStructure": {
+          "mapContainerExists": true,
+          "maplibreMapExists": true,
+          "canvasExists": true,
+          "canvasSize": "1280x720"
+        }
+      },
+      "issues": "Map instance is null because WebGL is unavailable in headless Chrome (SwiftShader GPU failure). Tile requests were never made. Configuration is correct but runtime rendering cannot be verified. This is a known environment limitation per AGENTS.md."
+    },
+    "VAL-MAP-002": {
+      "status": "blocked",
+      "title": "3D building extrusions visible on initial load",
+      "steps": [
+        {
+          "action": "Verify pitch setting via React props",
+          "expected": "Pitch ~45-60°",
+          "observed": "React Map component props: pitch=50 — within expected range"
+        },
+        {
+          "action": "Verify 3D building extrusion layer exists in map style",
+          "expected": "fill-extrusion layer for buildings",
+          "observed": "Layer 'building-3d-dark' exists with type='fill-extrusion', source-layer='building', minzoom=14. Uses render_height for extrusion height and render_min_height for base."
+        },
+        {
+          "action": "Verify building colors use EVA palette (not default gray)",
+          "expected": "Dark fills with EVA color accents",
+          "observed": "fill-extrusion-color interpolates: height 0→#0a0a2e (dark navy), 15→#2a1a4e (dark purple), 40→#765898 (medium purple). Opacity 0.85. These are EVA palette colors, not default gray."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-initial-load.png"],
+        "consoleErrors": "WebGL context creation error (environment limitation)",
+        "jsEvaluation": {
+          "pitch": 50,
+          "building3dLayer": {
+            "id": "building-3d-dark",
+            "type": "fill-extrusion",
+            "sourceLayer": "building",
+            "minzoom": 14,
+            "colorInterpolation": "0→#0a0a2e, 15→#2a1a4e, 40→#765898",
+            "opacity": 0.85
+          }
+        }
+      },
+      "issues": "Cannot visually verify 3D building rendering due to WebGL unavailability. Configuration is correct: pitch=50, fill-extrusion layer exists with EVA colors. Known environment limitation."
+    },
+    "VAL-MAP-003": {
+      "status": "blocked",
+      "title": "Camera pitch and rotate controls",
+      "steps": [
+        {
+          "action": "Verify pitch/rotate controls are enabled",
+          "expected": "Right-click drag changes pitch and bearing",
+          "observed": "Map component has maxPitch=85, initial pitch=50, bearing=-15. No dragRotate or dragPitch disabled props. However, map instance is null so interaction cannot be tested."
+        },
+        {
+          "action": "Attempt to interact with map via right-click drag",
+          "expected": "Camera pitch changes",
+          "observed": "Cannot test — map instance is null (WebGL unavailable), so mouse interactions have no effect on map state."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-initial-load.png"],
+        "consoleErrors": "WebGL context creation error (environment limitation)",
+        "jsEvaluation": {
+          "maxPitch": 85,
+          "initialPitch": 50,
+          "initialBearing": -15,
+          "dragRotateDisabled": false,
+          "dragPitchDisabled": false
+        }
+      },
+      "issues": "Cannot test camera pitch/rotate interactions because map instance is null (WebGL unavailable). Configuration allows pitch up to 85° and does not disable drag-rotate. Known environment limitation."
+    },
+    "VAL-MAP-004": {
+      "status": "blocked",
+      "title": "Zoom controls work",
+      "steps": [
+        {
+          "action": "Verify zoom bounds via React props",
+          "expected": "minZoom 11-13, maxZoom 17-19",
+          "observed": "minZoom=12 (within 11-13), maxZoom=18 (within 17-19) — correct bounds"
+        },
+        {
+          "action": "Verify NavigationControl component in source code",
+          "expected": "Zoom +/- buttons rendered with EVA styling",
+          "observed": "NavigationControl component is rendered at position='bottom-right' with showCompass=false. Custom CSS (map-controls.css) applies EVA theme: dark background rgba(29,29,58,0.85), NERV Orange border (#F0903A), neon glow box-shadow, clip-path polygon corners."
+        },
+        {
+          "action": "Check DOM for zoom control elements",
+          "expected": "Zoom buttons visible",
+          "observed": "maplibregl-ctrl-bottom-right container exists but is EMPTY. Zoom buttons (.maplibregl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out) do NOT exist in DOM. Controls failed to render because map instance is null."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-annotated.png"],
+        "consoleErrors": "WebGL context creation error (environment limitation)",
+        "jsEvaluation": {
+          "minZoom": 12,
+          "maxZoom": 18,
+          "navigationControlConfigured": true,
+          "zoomInExists": false,
+          "zoomOutExists": false,
+          "ctrlBottomRightExists": true,
+          "ctrlContainerEmpty": true
+        },
+        "cssEvidence": {
+          "file": "components/map/map-controls.css",
+          "ctrlGroupBg": "rgba(29, 29, 58, 0.85)",
+          "ctrlGroupBorder": "1px solid #F0903A",
+          "ctrlGroupGlow": "0 0 5px rgba(240, 144, 58, 0.4), 0 0 10px rgba(240, 144, 58, 0.2)",
+          "clipPath": "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))"
+        }
+      },
+      "issues": "Zoom controls did not render because map instance is null (WebGL unavailable). The NavigationControl component IS configured in source code with EVA theme CSS, and zoom bounds (12-18) are correctly set. Cannot verify runtime behavior. Known environment limitation."
+    },
+    "VAL-MAP-005": {
+      "status": "blocked",
+      "title": "Pan and navigation controls",
+      "steps": [
+        {
+          "action": "Verify pan is enabled (no restrictions)",
+          "expected": "Click-drag pans smoothly",
+          "observed": "No dragPan disabled prop in Map component. However, map instance is null so pan cannot be tested."
+        },
+        {
+          "action": "Verify zoom controls styled in EVA theme",
+          "expected": "Visible zoom +/- controls in EVA theme colors",
+          "observed": "NavigationControl configured at bottom-right. CSS file applies EVA styling (NERV Orange border, dark bg, neon glow, clip-path polygon). Controls did not render because map instance is null."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-annotated.png"],
+        "consoleErrors": "WebGL context creation error (environment limitation)",
+        "jsEvaluation": {
+          "dragPanDisabled": false,
+          "navigationControlPosition": "bottom-right",
+          "navControlExists": false
+        },
+        "cssEvidence": {
+          "evaThemed": true,
+          "notDefaultWhite": true,
+          "nervOrangeBorder": "#F0903A",
+          "darkBackground": "rgba(29, 29, 58, 0.85)"
+        }
+      },
+      "issues": "Cannot test pan interaction or verify control rendering because map instance is null (WebGL unavailable). Source code correctly configures NavigationControl with EVA theme CSS at bottom-right position. Known environment limitation."
+    },
+    "VAL-MAP-006": {
+      "status": "blocked",
+      "title": "Dark cyberpunk map style applied",
+      "steps": [
+        {
+          "action": "Verify road colors in map style JSON",
+          "expected": "Neon EVA palette colors (NERV Orange, MAGI Blue, Entry Plug Green)",
+          "observed": "road_trunk_primary=#F0903A (NERV Orange), road_secondary_tertiary=#54A2D4 (MAGI Blue), road_minor=rgba(84,162,212,0.4) (MAGI Blue 40%), road_motorway=#F0903A (NERV Orange). NOT default white/gray."
+        },
+        {
+          "action": "Verify water body colors",
+          "expected": "Dark blue/black",
+          "observed": "water fill-color=#001a2c (dark blue/black) — correct"
+        },
+        {
+          "action": "Verify park colors",
+          "expected": "Dark green",
+          "observed": "park fill-color=#0a2a1a (dark green) with outline rgba(88,242,165,0.15) — correct"
+        },
+        {
+          "action": "Verify street label font style",
+          "expected": "Technical/monospace font",
+          "observed": "All label layers use ['Share Tech Mono Regular', 'Noto Sans Regular'] — monospace technical font. Label color=#58F2A5 (Entry Plug Green). Water labels=#54A2D4 (MAGI Blue)."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["map-initial-load.png"],
+        "consoleErrors": "WebGL context creation error (environment limitation)",
+        "jsEvaluation": {
+          "roadColors": {
+            "trunk_primary": "#F0903A",
+            "secondary_tertiary": "#54A2D4",
+            "motorway": "#F0903A",
+            "minor": "rgba(84, 162, 212, 0.4)",
+            "service_track": "rgba(84, 162, 212, 0.4)"
+          },
+          "waterColor": "#001a2c",
+          "parkColor": "#0a2a1a",
+          "labelFont": ["Share Tech Mono Regular", "Noto Sans Regular"],
+          "labelColor": "#58F2A5",
+          "waterLabelColor": "#54A2D4",
+          "backgroundBgColor": "#1D1D3A"
+        },
+        "mapStyle": {
+          "version": 8,
+          "layerCount": 50,
+          "tileSource": "https://tiles.openfreemap.org/planet",
+          "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf"
+        }
+      },
+      "issues": "Cannot visually verify rendered map style because WebGL is unavailable. Map style JSON configuration is verified correct: roads use NERV Orange/MAGI Blue, water is dark blue/black, parks are dark green, labels use Share Tech Mono monospace font in Entry Plug Green. Known environment limitation."
+    }
+  },
+  "frictions": [
+    {
+      "description": "WebGL is unavailable in headless Chrome (SwiftShader Vulkan driver failure). MapLibre GL map instance is null — the map mounts DOM elements but cannot initialize its WebGL painter. This prevents all tile loading, rendering, and control initialization.",
+      "resolved": false,
+      "resolution": "Verified map configuration via React component props and map style JSON instead of runtime map state. All assertions are blocked for visual rendering but configuration is confirmed correct.",
+      "affectedAssertions": ["VAL-MAP-001", "VAL-MAP-002", "VAL-MAP-003", "VAL-MAP-004", "VAL-MAP-005", "VAL-MAP-006"]
+    },
+    {
+      "description": "NavigationControl zoom buttons did not render in DOM because they depend on a functioning map instance. The maplibregl-ctrl-bottom-right container exists but is empty.",
+      "resolved": false,
+      "resolution": "Verified via source code that NavigationControl is configured with position='bottom-right' and EVA theme CSS is applied in map-controls.css.",
+      "affectedAssertions": ["VAL-MAP-004", "VAL-MAP-005"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "WebGL context creation fails in headless Chrome: 'Could not create a WebGL context, VENDOR = 0xffff, DEVICE = 0xffff, GL_VENDOR = Google Inc. (Google), GL_RENDERER = ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device), SwiftShader driver-5.0.0)'. MapLibre GL JS requires WebGL to initialize the map. The map instance (accessed via react-map-gl internal state) is null.",
+      "affectedAssertions": ["VAL-MAP-001", "VAL-MAP-002", "VAL-MAP-003", "VAL-MAP-004", "VAL-MAP-005", "VAL-MAP-006"],
+      "quickFixAttempted": "This is a known environment limitation documented in AGENTS.md. No fix possible without GPU/WebGL support in the testing environment. Used React props and map style JSON verification as alternative evidence."
+    }
+  ],
+  "summary": "Tested 6 assertions: 0 passed, 0 failed, 6 blocked (all blocked by WebGL unavailability in headless Chrome). All map configuration is verified correct via React component props and map style JSON: center=40.6944/-73.9213 (Bushwick), zoom=15, pitch=50, minZoom=12, maxZoom=18, dark EVA palette colors throughout (roads=#F0903A/#54A2D4, water=#001a2c, parks=#0a2a1a, labels=Share Tech Mono in #58F2A5), 3D building extrusion layer with EVA color interpolation. The MapLibre map instance is null due to WebGL context creation failure (SwiftShader), preventing tile loading, rendering, control initialization, and interaction testing."
+}
