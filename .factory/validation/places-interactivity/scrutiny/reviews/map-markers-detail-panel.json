@@ -1,0 +1,34 @@
+{
+  "featureId": "map-markers-detail-panel",
+  "reviewedAt": "2026-03-10T04:02:00.000Z",
+  "commitId": "b80d3b1130d130acf2bc0695a0c9fdf254584a28",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Solid implementation covering all feature requirements. Place markers render at correct geo positions with distinct neon glow colors per category using CATEGORIES constant. NGE targeting reticle with animated SVG brackets, counter-rotating rings, and crosshairs appears on hover with place name/category in Share Tech Mono. Click triggers lock-on animation (brackets close tight + 'TARGET LOCKED' flash) with 800ms delay before detail panel opens. EVA-styled detail panel uses clip-path angled corners, neon glow border, Framer Motion slide-in, and correctly displays name (Orbitron), category badge, description (Rajdhani), address, conditional hours/website fields. Website links have target='_blank' rel='noopener'. Close via X button and canvas click. Fly-to camera animation on selection. Both scrutiny fixes confirmed: createDarkMapStyle() wrapped in useMemo (line 69), attribution control re-enabled with compact mode (line 146). Test coverage is comprehensive with 22 new tests across 3 files (105 total).",
+    "issues": [
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 103,
+        "severity": "non_blocking",
+        "description": "handleSelectPlace depends on viewState.zoom, causing the callback to recreate on every zoom change. Since PlaceMarkers doesn't use React.memo, this triggers re-renders of all 21+ markers on every zoom interaction. Consider using a ref for viewState.zoom or extracting it inside the callback to avoid unnecessary re-renders."
+      },
+      {
+        "file": "components/map/place-detail-panel.tsx",
+        "line": 161,
+        "severity": "non_blocking",
+        "description": "rel='noopener' is present as required, but adding 'noreferrer' (rel='noopener noreferrer') would provide defense-in-depth against referrer leaking in older browsers. Minor security hardening."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "Worker's skillFeedback suggests map-worker skill should document that react-map-gl v8 exports MapRef type from 'react-map-gl/maplibre' and that MapLibre v5's attributionControl accepts an AttributionControlOptions object (e.g., { compact: true }) rather than a boolean. The current skill file doesn't mention either pattern, and the worker had to discover the correct attributionControl API.",
+      "evidence": "Handoff skillFeedback.suggestedChanges: 'Map-worker skill could note that react-map-gl v8 maplibre path exports MapRef type, and that attributionControl accepts AttributionControlOptions object (not boolean true) for MapLibre v5.' Implementation at map-view.tsx:5 uses `import type { MapRef } from 'react-map-gl/maplibre'` and line 146 uses `attributionControl={{ compact: true }}`."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Feature passes review. All 12 expected behaviors from the feature spec are implemented correctly: markers with category colors, targeting reticle hover/click UI, lock-on animation, detail panel with all fields (conditional hours/website), close behaviors, fly-to animation. Both scrutiny fixes (useMemo wrap and attribution re-enable) are confirmed. Two non-blocking issues noted: (1) handleSelectPlace recreates on every zoom change due to viewState.zoom dependency, and (2) rel attribute could include noreferrer for defense-in-depth. Test coverage is thorough with 22 new tests validating rendering, interactions, animations, and accessibility."
+}

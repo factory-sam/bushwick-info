@@ -1,0 +1,40 @@
+{
+  "featureId": "category-filters-search",
+  "reviewedAt": "2026-03-10T04:15:00.000Z",
+  "commitId": "c4450ae",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Clean, well-structured implementation of category filter bar and search functionality. All 11 expected behaviors from the feature spec are covered: 6 category toggle buttons with NERV styling (clip-path corners, neon glow active/dimmed inactive), EVA-styled search bar with case-insensitive matching and dropdown scoped to active categories, empty states for all-filtered and no-results, auto-close of detail panel on category filter-out, and horizontal scroll on mobile. 22 new tests across 3 test files plus 2 new integration tests in MapView. Code follows project conventions (TypeScript strict, Tailwind nerv.* colors, pointer-events-none on overlays, clip-path instead of border-radius for panels). Inline styles used only for complex CSS values per AGENTS.md exception.",
+    "issues": [
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 99,
+        "severity": "non_blocking",
+        "description": "handleSelectPlace useCallback depends on viewState.zoom, causing the callback to be recreated on every zoom change. Since zoom changes frequently during pinch/scroll, this triggers unnecessary re-renders of child components receiving this callback. Consider using a ref for viewState.zoom to stabilize the callback identity."
+      },
+      {
+        "file": "components/map/search-bar.tsx",
+        "line": 130,
+        "severity": "non_blocking",
+        "description": "No keyboard navigation (arrow keys) within the search dropdown results. Users can Tab through results since they're buttons, but arrow-key navigation is a common UX pattern for typeahead dropdowns. Low priority given the small dataset (21 places max)."
+      },
+      {
+        "file": "components/map/search-bar.tsx",
+        "line": 155,
+        "severity": "non_blocking",
+        "description": "Inline fontSize: '10px' for category label in dropdown results. Could use Tailwind text-[10px] for consistency, though this is a very minor style preference."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "Worker used pointer-events-none on the parent container div and pointer-events-auto on interactive children (CategoryFilterBar, SearchBar) to allow click-through to the map while keeping controls interactive. This is a good pattern for overlay UIs that isn't explicitly documented in AGENTS.md — only 'pointer-events: none on decorative overlays' is mentioned. The interactive overlay pattern could be documented for future workers building controls over the map.",
+      "evidence": "components/map/map-view.tsx:140 — parent div has 'pointer-events-none', while category-filter-bar.tsx:37 and search-bar.tsx:80 both have 'pointer-events-auto' on their root elements."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Feature passes review. All 11 expected behaviors are implemented and tested. Category filter bar renders 6 NERV-styled toggle buttons with proper clip-path corners and neon glow states. Search bar provides EVA-styled typeahead with case-insensitive matching scoped to active categories. Empty states, auto-close on filter-out, and mobile horizontal scroll all present. 22 new tests with good coverage. Three non-blocking issues noted: useCallback dependency on viewState.zoom causing unnecessary recreations, missing arrow-key navigation in search dropdown, and one minor inline fontSize that could use Tailwind. No blocking issues found."
+}

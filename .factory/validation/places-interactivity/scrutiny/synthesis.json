@@ -1,0 +1,104 @@
+{
+  "milestone": "places-interactivity",
+  "round": 1,
+  "status": "fail",
+  "validatorsRun": {
+    "test": { "passed": true, "command": "pnpm test", "exitCode": 0 },
+    "typecheck": { "passed": true, "command": "pnpm typecheck", "exitCode": 0 },
+    "lint": { "passed": true, "command": "pnpm lint", "exitCode": 0 }
+  },
+  "reviewsSummary": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "failedFeatures": ["map-boundary-fade"]
+  },
+  "blockingIssues": [
+    {
+      "featureId": "map-boundary-fade",
+      "severity": "blocking",
+      "description": "Inverted east/west coordinate expansion in fade ring generation (lib/map/map-bounds.ts ~lines 100-101, 104-105, 128-131, 134-135). The code does `east - offset` and `west + offset` but since east longitude is -73.890 (negative), subtracting makes it MORE negative (moves west), and adding to west makes it LESS negative (moves east). Correct logic: `east + offset` to go east, `west - offset` to go west. This causes fade ring polygons to shrink in E-W dimension instead of expanding, so the fade effect only works on north/south edges. Fix: swap the +/- signs for all east/west offset calculations in createBoundaryFadeGeoJSON(). Also fix the misleading inline comments. Add geometric validity test assertions (outer.east > inner.east, outer.west < inner.west for each ring band)."
+    }
+  ],
+  "nonBlockingIssues": [
+    {
+      "featureId": "map-boundary-fade",
+      "severity": "non_blocking",
+      "description": "Winding order comments in createRingPolygon() are incorrect (says outer is counter-clockwise but coordinates trace clockwise). MapLibre handles both, so no runtime bug."
+    },
+    {
+      "featureId": "map-boundary-fade",
+      "severity": "non_blocking",
+      "description": "Fade layers render on top of ALL map style layers including text labels (no beforeId prop on Layer components). Labels in fade zone are darkened, reducing readability."
+    },
+    {
+      "featureId": "map-markers-detail-panel",
+      "severity": "non_blocking",
+      "description": "handleSelectPlace useCallback depends on viewState.zoom, causing recreation on every zoom change and unnecessary re-renders of all 21+ markers."
+    },
+    {
+      "featureId": "map-markers-detail-panel",
+      "severity": "non_blocking",
+      "description": "Website links use rel='noopener' but could add 'noreferrer' for defense-in-depth against referrer leaking in older browsers."
+    },
+    {
+      "featureId": "category-filters-search",
+      "severity": "non_blocking",
+      "description": "handleSelectPlace useCallback depends on viewState.zoom (same issue as markers feature, shared code in map-view.tsx)."
+    },
+    {
+      "featureId": "category-filters-search",
+      "severity": "non_blocking",
+      "description": "No arrow-key keyboard navigation in search dropdown results. Users can Tab through results but arrow-key nav is a common UX pattern."
+    },
+    {
+      "featureId": "category-filters-search",
+      "severity": "non_blocking",
+      "description": "Inline fontSize: '10px' in search-bar.tsx for category label — could use Tailwind text-[10px] for consistency (very minor)."
+    },
+    {
+      "featureId": "places-data-as-code",
+      "severity": "non_blocking",
+      "description": "Otis categorized as 'bars' but described as 'Contemporary American bistro' — debatable categorization."
+    },
+    {
+      "featureId": "places-data-as-code",
+      "severity": "non_blocking",
+      "description": "Bushniwa's coordinates (40.708, -73.935) have lower precision (3 decimal places) than other places (4 decimal places)."
+    }
+  ],
+  "appliedUpdates": [],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Add convention note about negative longitude coordinate math: 'When expanding bounds in the NYC area (negative longitudes), adding to longitude moves east (less negative) and subtracting moves west (more negative). Example: -73.890 + 0.01 = -73.880 (east), -73.945 - 0.01 = -73.955 (west).'",
+      "evidence": "lib/map/map-bounds.ts had inverted east/west expansion logic with incorrect comments ('East is negative, subtract to go east'). Worker got confused by negative coordinate system.",
+      "isSystemic": false
+    },
+    {
+      "target": "skills",
+      "suggestion": "Update map-worker skill to document: (1) react-map-gl v8 exports MapRef type from 'react-map-gl/maplibre', (2) MapLibre v5's attributionControl accepts an AttributionControlOptions object ({compact: true}) rather than a boolean, (3) use beforeId prop on Layer components when adding overlay layers to control render order relative to labels.",
+      "evidence": "map-markers-detail-panel worker had to discover correct attributionControl API. map-boundary-fade worker's fade layers render above labels because beforeId wasn't used.",
+      "isSystemic": true
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Document the interactive overlay pattern: use pointer-events-none on parent container div with pointer-events-auto on interactive children (buttons, inputs) to allow click-through to the map while keeping UI controls interactive.",
+      "evidence": "category-filters-search worker used this pattern in map-view.tsx:140 and both category-filter-bar.tsx:37 and search-bar.tsx:80.",
+      "isSystemic": false
+    },
+    {
+      "target": "skills",
+      "suggestion": "Add exception to fullstack-worker skill's TDD step: 'For pure data layer features where tests must import the data module, create the data file first, then write tests. TDD is impractical when the test file cannot compile without the data exports.'",
+      "evidence": "places-data-as-code worker created data/places.ts before tests. Worker claimed followedProcedure: true despite this deviation.",
+      "isSystemic": false
+    }
+  ],
+  "rejectedObservations": [
+    {
+      "observation": "The places data exports the array as a named export 'places' (lowercase). This is fine and follows JS conventions for non-component exports.",
+      "reason": "Not actionable — just noting an existing pattern that's already consistent with TypeScript conventions. No documentation needed."
+    }
+  ],
+  "previousRound": null
+}

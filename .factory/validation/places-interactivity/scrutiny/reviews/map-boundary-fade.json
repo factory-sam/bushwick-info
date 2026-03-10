@@ -1,0 +1,51 @@
+{
+  "featureId": "map-boundary-fade",
+  "reviewedAt": "2026-03-10T04:15:00.000Z",
+  "commitId": "8dd6250",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "fail",
+  "codeReview": {
+    "summary": "The feature implements maxBounds correctly and has a well-structured graduated fade overlay system with GeoJSON ring polygons. However, there is a critical coordinate math bug in createBoundaryFadeGeoJSON(): the east/west expansion logic is inverted, causing fade ring polygons to shrink in the E-W dimension instead of expanding outward. This produces invalid GeoJSON polygons where inner holes extend beyond outer boundaries on the east and west sides, meaning the fade effect will not render correctly on those edges. The tests do not catch this because they only verify structural properties (FeatureCollection type, polygon count, ring properties) rather than geometric validity of the coordinates.",
+    "issues": [
+      {
+        "file": "lib/map/map-bounds.ts",
+        "line": 100,
+        "severity": "blocking",
+        "description": "Inverted east/west coordinate expansion in fade ring generation. Line 100: `east: FADE_AREA.east - outerRing.offset` moves the east boundary WESTWARD (more negative longitude = further west). Line 101: `west: FADE_AREA.west + outerRing.offset` moves the west boundary EASTWARD (less negative longitude = further east). The correct logic should be `east: FADE_AREA.east + offset` (less negative = further east) and `west: FADE_AREA.west - offset` (more negative = further west). The same inversion applies to innerBounds at lines 104-105, and to the outermost ring at lines 122-127. This creates ring polygons where the outer rectangle is narrower than the inner hole in the E-W dimension, producing invalid GeoJSON. The fade effect will not appear on the east and west sides of the Bushwick area. The inline comments ('East is negative, subtract to go east') reinforce the incorrect logic."
+      },
+      {
+        "file": "lib/map/map-bounds.ts",
+        "line": 70,
+        "severity": "non_blocking",
+        "description": "Winding order comments are incorrect. Line 70 says 'Outer ring (counter-clockwise = fill area)' but the coordinates [SW→SE→NE→NW→SW] trace a clockwise path. Line 77 says 'Inner ring (clockwise = hole)' but [SW→NW→NE→SE→SW] is counter-clockwise. MapLibre handles both winding orders in practice, so this doesn't cause a runtime bug, but the misleading comments could confuse future developers."
+      },
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 70,
+        "severity": "non_blocking",
+        "description": "Fade layers render on top of ALL map style layers including text labels, because the react-map-gl Layer components don't specify a `beforeId` prop. The JSDoc in map-bounds.ts (line 153) states 'These layers should be added after building layers but before labels' but this ordering is not enforced in the component. Labels in the fade zone will be darkened, reducing readability."
+      },
+      {
+        "file": "lib/map/__tests__/map-bounds.test.ts",
+        "line": 1,
+        "severity": "non_blocking",
+        "description": "Tests verify only structural properties of the GeoJSON output (FeatureCollection type, Polygon geometry type, ring property existence) but do not validate geometric correctness — specifically that outer ring coordinates are strictly larger than inner ring coordinates in all dimensions. A test asserting outer.east > inner.east and outer.west < inner.west for each ring band would have caught the coordinate inversion bug."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "The map-worker skill's work procedure says to use react-map-gl Source/Layer components but doesn't mention the `beforeId` prop for layer ordering. Workers adding overlay layers (like fade rings) should be guided to insert them before label layers to avoid darkening text. The worker's own skillFeedback suggested adding this guidance.",
+      "evidence": "Worker's skillFeedback.suggestedChanges: 'The map-worker skill could mention that when adding GeoJSON overlay layers, the Source/Layer components from react-map-gl are the idiomatic approach rather than adding layers directly to the style JSON'. The created layers lack beforeId, causing them to render above labels."
+    },
+    {
+      "area": "conventions",
+      "observation": "Negative longitude coordinate math is error-prone and caused the blocking bug. AGENTS.md documents the Bushwick coordinates but doesn't note that east/west expansion requires adding to east longitude (less negative) and subtracting from west longitude (more negative). A convention note about negative longitude arithmetic could prevent similar bugs.",
+      "evidence": "lib/map/map-bounds.ts lines 100-101 have incorrect comments 'East is negative, subtract to go east' — the opposite is true. The worker got confused by the negative coordinate system."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "FAIL — The maxBounds implementation is correct and the graduated fade overlay architecture (7 concentric GeoJSON ring polygons with increasing opacity) is well-designed. However, a critical coordinate math bug inverts the east/west expansion in all fade rings: the code subtracts from east longitude and adds to west longitude, which shrinks rings in the E-W dimension instead of expanding them outward. This produces geometrically invalid ring polygons where inner holes overflow the outer boundary on east and west sides. The fade effect will only work on the north and south edges, not east and west. The worker could not visually verify this because the headless browser lacked WebGL rendering. Tests need geometric validity assertions to catch this class of bug."
+}
