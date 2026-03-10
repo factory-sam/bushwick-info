@@ -2,16 +2,19 @@
 
 import { useCallback, useState, useRef, useEffect } from "react";
 import { Marker } from "react-map-gl/maplibre";
-import { places, CATEGORIES, type Place } from "@/data/places";
+import { places as allPlaces, CATEGORIES, type Place } from "@/data/places";
 import { TargetingReticle } from "./targeting-reticle";
 import "./targeting-reticle.css";
 
 export interface PlaceMarkersProps {
   onSelectPlace: (place: Place) => void;
   selectedPlaceId: string | null;
+  /** When provided, only these places are rendered as markers. Defaults to all places. */
+  visiblePlaces?: Place[];
 }
 
-export function PlaceMarkers({ onSelectPlace, selectedPlaceId }: PlaceMarkersProps) {
+export function PlaceMarkers({ onSelectPlace, selectedPlaceId, visiblePlaces }: PlaceMarkersProps) {
+  const placesToRender = visiblePlaces ?? allPlaces;
   const [hoveredPlaceId, setHoveredPlaceId] = useState<string | null>(null);
   const [lockingPlaceId, setLockingPlaceId] = useState<string | null>(null);
   const lockTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +57,7 @@ export function PlaceMarkers({ onSelectPlace, selectedPlaceId }: PlaceMarkersPro
 
   return (
     <>
-      {places.map((place) => {
+      {placesToRender.map((place) => {
         const categoryInfo = CATEGORIES[place.category];
         const isHovered = hoveredPlaceId === place.id;
         const isLocking = lockingPlaceId === place.id;

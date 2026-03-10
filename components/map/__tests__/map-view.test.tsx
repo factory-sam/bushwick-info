@@ -144,8 +144,18 @@ describe("MapView component", () => {
     const map = screen.getByTestId("mock-maplibre");
     expect(map).toBeInTheDocument();
     // Each place should have a marker with aria-label
+    // Filter buttons (6) + marker buttons (21) = at least 27 total buttons
     const markerButtons = screen.getAllByRole("button");
-    // We should have markers for all 21 places
-    expect(markerButtons.length).toBeGreaterThanOrEqual(21);
+    expect(markerButtons.length).toBeGreaterThanOrEqual(21 + 6);
+  });
+
+  it("renders the category filter bar", () => {
+    render(<MapView />);
+    expect(screen.getByTestId("category-filter-bar")).toBeInTheDocument();
+  });
+
+  it("renders the search bar", () => {
+    render(<MapView />);
+    expect(screen.getByTestId("search-input")).toBeInTheDocument();
   });
 });

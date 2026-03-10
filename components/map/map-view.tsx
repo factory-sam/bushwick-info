@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, { NavigationControl, Source, Layer } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import type { LngLatBoundsLike, FilterSpecification, FillLayerSpecification } from "maplibre-gl";
@@ -10,7 +10,10 @@ import { createDarkMapStyle, DEFAULT_VIEW_STATE, MAP_BOUNDS } from "@/lib/map/ma
 import { createBoundaryFadeGeoJSON, createBoundaryFadeLayers } from "@/lib/map/map-bounds";
 import { PlaceMarkers } from "./place-markers";
 import { PlaceDetailPanel } from "./place-detail-panel";
-import type { Place } from "@/data/places";
+import { CategoryFilterBar } from "./category-filter-bar";
+import { SearchBar } from "./search-bar";
+import { EmptyStateMessage } from "./empty-state-message";
+import { places, type Place, type PlaceCategory } from "@/data/places";
 
 export interface MapMoveEvent {
   latitude: number;
@@ -21,6 +24,15 @@ export interface MapMoveEvent {
 export interface MapViewProps {
   onMove?: (event: MapMoveEvent) => void;
 }
+
+const ALL_CATEGORIES: PlaceCategory[] = [
+  "stores",
+  "bars",
+  "clubs",
+  "coffee",
+  "restaurants",
+  "other",
+];
 
 export default function MapView({ onMove }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
@@ -35,6 +47,24 @@ export default function MapView({ onMove }: MapViewProps) {
   });
 
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [activeCategories, setActiveCategories] = useState<Set<PlaceCategory>>(
+    () => new Set(ALL_CATEGORIES)
+  );
+
+  // Filter places by active categories
+  const visiblePlaces = useMemo(
+    () => places.filter((p) => activeCategories.has(p.category)),
+    [activeCategories]
+  );
+
+  const allFiltered = activeCategories.size === 0;
+
+  // Close detail panel if selected place's category is filtered out
+  useEffect(() => {
+    if (selectedPlace && !activeCategories.has(selectedPlace.category)) {
+      setSelectedPlace(null);
+    }
+  }, [activeCategories, selectedPlace]);
 
   const mapStyle = useMemo(() => createDarkMapStyle(), []);
   const fadeGeoJSON = useMemo(() => createBoundaryFadeGeoJSON(), []);
@@ -88,6 +118,18 @@ export default function MapView({ onMove }: MapViewProps) {
     [selectedPlace]
   );
 
+  const handleToggleCategory = useCallback((category: PlaceCategory) => {
+    setActiveCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  }, []);
+
   return (
     <div className="h-full w-full" data-testid="map-container">
       <Map
@@ -119,12 +161,29 @@ export default function MapView({ onMove }: MapViewProps) {
           ))}
         </Source>
 
-        {/* Place markers with NGE targeting reticle */}
+        {/* Place markers with NGE targeting reticle — only visible categories */}
         <PlaceMarkers
           onSelectPlace={handleSelectPlace}
           selectedPlaceId={selectedPlace?.id ?? null}
+          visiblePlaces={visiblePlaces}
         />
       </Map>
+
+      {/* Category filter bar and search — positioned top-left over the map */}
+      <div className="pointer-events-none absolute left-0 top-14 z-20 flex w-full flex-col gap-2 px-3 md:w-96 md:px-4">
+        <CategoryFilterBar
+          activeCategories={activeCategories}
+          onToggleCategory={handleToggleCategory}
+        />
+        <SearchBar
+          places={places}
+          activeCategories={activeCategories}
+          onSelectPlace={handleSelectPlace}
+        />
+      </div>
+
+      {/* Empty state when all categories are filtered out */}
+      {allFiltered && <EmptyStateMessage />}
 
       {/* Detail panel — rendered outside Map to overlay properly */}
       <PlaceDetailPanel place={selectedPlace} onClose={handleClosePanel} />
