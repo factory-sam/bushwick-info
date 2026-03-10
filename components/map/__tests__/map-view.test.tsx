@@ -14,6 +14,11 @@ vi.mock("react-map-gl/maplibre", () => ({
         data-min-zoom={props.minZoom}
         data-max-zoom={props.maxZoom}
         data-has-max-bounds={props.maxBounds ? "true" : "false"}
+        data-attribution-control={
+          props.attributionControl !== false && props.attributionControl !== undefined
+            ? "enabled"
+            : "disabled"
+        }
         style={style as React.CSSProperties}
       >
         {children as React.ReactNode}
@@ -27,11 +32,46 @@ vi.mock("react-map-gl/maplibre", () => ({
   Layer: vi.fn(({ id }: Record<string, unknown>) => (
     <div data-testid={`layer-${id}`} />
   )),
+  Marker: vi.fn(({ children, longitude, latitude }: Record<string, unknown>) => (
+    <div data-testid={`marker-${longitude}-${latitude}`}>{children as React.ReactNode}</div>
+  )),
 }));
 
 // Mock CSS imports
 vi.mock("maplibre-gl/dist/maplibre-gl.css", () => ({}));
 vi.mock("../map-controls.css", () => ({}));
+vi.mock("../targeting-reticle.css", () => ({}));
+
+// Mock motion/react to avoid Framer Motion issues in tests
+vi.mock("motion/react", () => ({
+  motion: {
+    div: vi.fn(({ children, ...props }: Record<string, unknown>) => (
+      <div {...filterMotionProps(props)}>{children as React.ReactNode}</div>
+    )),
+    header: vi.fn(({ children, ...props }: Record<string, unknown>) => (
+      <header {...filterMotionProps(props)}>{children as React.ReactNode}</header>
+    )),
+    h2: vi.fn(({ children, ...props }: Record<string, unknown>) => (
+      <h2 {...filterMotionProps(props)}>{children as React.ReactNode}</h2>
+    )),
+    p: vi.fn(({ children, ...props }: Record<string, unknown>) => (
+      <p {...filterMotionProps(props)}>{children as React.ReactNode}</p>
+    )),
+  },
+  AnimatePresence: vi.fn(({ children }: Record<string, unknown>) => (
+    <>{children as React.ReactNode}</>
+  )),
+}));
+
+function filterMotionProps(props: Record<string, unknown>): Record<string, unknown> {
+  const filtered: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (!["initial", "animate", "exit", "transition", "whileHover", "whileTap", "key"].includes(key)) {
+      filtered[key] = value;
+    }
+  }
+  return filtered;
+}
 
 import MapView from "../map-view";
 import { MAP_BOUNDS } from "@/lib/map/map-style";
@@ -88,5 +128,24 @@ describe("MapView component", () => {
     // The component should render without error when onMove is provided
     const container = screen.getByTestId("map-container");
     expect(container).toBeInTheDocument();
+  });
+
+  it("enables attribution control for ODbL license compliance", () => {
+    render(<MapView />);
+    const map = screen.getByTestId("mock-maplibre");
+    expect(map.dataset.attributionControl).toBe("enabled");
+    // Verify it's an options object (compact mode), not just true
+    expect(lastMapProps.attributionControl).toEqual({ compact: true });
+  });
+
+  it("renders place markers for all places", () => {
+    render(<MapView />);
+    // Markers should be rendered inside the map
+    const map = screen.getByTestId("mock-maplibre");
+    expect(map).toBeInTheDocument();
+    // Each place should have a marker with aria-label
+    const markerButtons = screen.getAllByRole("button");
+    // We should have markers for all 21 places
+    expect(markerButtons.length).toBeGreaterThanOrEqual(21);
   });
 });
