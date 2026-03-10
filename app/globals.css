@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Orbitron", sans-serif;
+  --font-mono: "Share Tech Mono", monospace;
+  --font-body: "Rajdhani", sans-serif;
+
+  --color-nerv-orange: #F0903A;
+  --color-nerv-green: #58F2A5;
+  --color-nerv-purple: #765898;
+  --color-nerv-deep-purple: #1D1D3A;
+  --color-nerv-red: #E81900;
+  --color-nerv-blue: #54A2D4;
+  --color-nerv-black: #000053;
+  --color-nerv-yellow: #F6E201;
+}
