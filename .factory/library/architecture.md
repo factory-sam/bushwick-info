@@ -14,15 +14,15 @@ Architectural decisions, patterns, and conventions discovered during the mission
 - **Styling:** Tailwind CSS v4 with EVA color palette
 - **Animation:** Framer Motion (`motion` package)
 - **Fonts:** Google Fonts (Orbitron, Share Tech Mono, Rajdhani)
-- **Data:** JSON files in `/data/` directory + Next.js API routes
-- **Auth:** Simple env var password + httpOnly cookie for admin
+- **Data:** TypeScript data files in `/data/` directory (no API routes, no database)
+- **Auth:** None — places managed as code, no admin panel
 - **Testing:** Vitest + React Testing Library
 
 ## Key Patterns
 
 - Map component loaded via `next/dynamic` with `ssr: false` to avoid MapLibre SSR issues
-- Places stored as JSON files read/written by API routes
-- Admin auth via middleware checking session cookie
+- Places defined as typed TypeScript array in data/places.ts (imported directly, no API)
+- No admin panel, no authentication — data managed as code
 - EVA theme colors defined in Tailwind config under `nerv.*` namespace
 - All decorative overlays (scanlines, vignette, hex grid) use `pointer-events: none`
 
