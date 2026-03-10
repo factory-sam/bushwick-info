@@ -1,0 +1,64 @@
+{
+  "milestone": "polish-deploy",
+  "round": 1,
+  "status": "pass",
+  "validatorsRun": {
+    "test": { "passed": true, "command": "pnpm test", "exitCode": 0 },
+    "typecheck": { "passed": true, "command": "pnpm typecheck", "exitCode": 0 },
+    "lint": { "passed": true, "command": "pnpm lint", "exitCode": 0 }
+  },
+  "reviewsSummary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "failedFeatures": []
+  },
+  "blockingIssues": [],
+  "appliedUpdates": [
+    {
+      "target": "services.yaml",
+      "description": "Added 'start: PORT=3100 pnpm start' command for production server, matching the PORT convention used by the dev command",
+      "sourceFeature": "build-deploy-integration"
+    },
+    {
+      "target": "library",
+      "description": "Documented the dual-panel responsive pattern (mobile bottom sheet + desktop side panel, both in DOM with CSS toggle) in architecture.md to prevent future workers from being surprised by duplicate DOM elements in tests",
+      "sourceFeature": "responsive-mobile-polish"
+    }
+  ],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "skills",
+      "suggestion": "Add TDD exemption guidance to fullstack-worker, ui-worker, and map-worker skills: the RED-GREEN-REFACTOR cycle should be skipped for pure data corrections, color/value changes, CSS positioning changes, responsive CSS work, and verification-only features. These are not new functionality and TDD adds no value.",
+      "evidence": "5 of 6 features had workers skip or deviate from the TDD step. fix-place-coordinates (data fix), change-clubs-color (value swap), move-search-filter-top-right (CSS positioning), responsive-mobile-polish (responsive CSS), and build-deploy-integration (verification only) all correctly skipped TDD. Workers noted this in skillFeedback across fullstack-worker, ui-worker, and map-worker skills.",
+      "isSystemic": true
+    },
+    {
+      "target": "skills",
+      "suggestion": "Add note to map-worker and ui-worker skills that manual browser verification (agent-browser) is optional for code-level fixes fully covered by unit tests. Visual verification adds overhead with minimal value when changes are to refs, callback dependencies, keyboard handlers, or other non-visual behaviors.",
+      "evidence": "fix-place-coordinates and misc-polish-fixes workers both skipped browser verification. misc-polish-fixes had 10 comprehensive unit tests covering all three fixes (beforeId, zoomRef, keyboard nav). fix-place-coordinates was a pure data coordinate update with no visual verification value given WebGL limitations in headless Chrome.",
+      "isSystemic": true
+    },
+    {
+      "target": "skills",
+      "suggestion": "Add a verification-only procedure path to the fullstack-worker skill for features that require no code changes (integration testing, build verification, deploy readiness checks). The current skill assumes implementation work with RED/GREEN cycles.",
+      "evidence": "build-deploy-integration worker had to adapt the skill procedure since no code changes were needed. Worker suggested this in skillFeedback.suggestedChanges.",
+      "isSystemic": false
+    }
+  ],
+  "rejectedObservations": [
+    {
+      "observation": "Worker didn't explicitly run pnpm lint for change-clubs-color feature",
+      "reason": "Individual oversight for a trivial 3-line change, not a systemic issue. Lint was run by the scrutiny validator and passed. Not worth a skill change."
+    },
+    {
+      "observation": "next lint deprecation warning about Next.js 16 migration",
+      "reason": "Pre-existing issue visible to anyone running lint. Not actionable until Next.js 16 upgrade is planned. Already documented in lint output."
+    },
+    {
+      "observation": "beforeId 'water_name_point_label' hardcoded as string literal without shared constant from map-style.ts",
+      "reason": "Valid code improvement but too granular for a convention or library entry. This is a specific refactoring suggestion, not a pattern to document."
+    }
+  ],
+  "previousRound": null
+}

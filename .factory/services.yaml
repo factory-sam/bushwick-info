@@ -5,6 +5,7 @@ commands:
   test: pnpm test
   lint: pnpm lint
   typecheck: pnpm typecheck
+  start: PORT=3100 pnpm start
 
 services:
   web:

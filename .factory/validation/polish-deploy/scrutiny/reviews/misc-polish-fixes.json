@@ -1,0 +1,39 @@
+{
+  "featureId": "misc-polish-fixes",
+  "reviewedAt": "2026-03-10T05:12:00.000Z",
+  "commitId": "9432873",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "All three fixes are correctly implemented with appropriate tests and ARIA accessibility support. (1) Fade layers use beforeId='water_name_point_label' which is confirmed as the first label/text layer in the map style (lib/map/map-style.ts:754), correctly positioning fade layers below all text labels. (2) handleSelectPlace now uses a zoomRef instead of viewState.zoom — the ref is updated in handleMove and read in the callback, making the dependency array empty and the callback stable across zoom changes. This is the standard React pattern for accessing mutable values in stable callbacks. (3) Arrow-key keyboard navigation is comprehensive: ArrowDown/ArrowUp with wrap-around, Enter to select, Escape to dismiss. Highlight resets on new input. Full ARIA combobox pattern implemented with role=combobox, aria-controls, aria-expanded, aria-activedescendant on the input, role=listbox on the dropdown, and role=option with aria-selected on each result. filteredResults is correctly wrapped in useMemo. 10 new tests cover all keyboard behaviors and accessibility attributes.",
+    "issues": [
+      {
+        "file": "components/map/search-bar.tsx",
+        "line": 72,
+        "severity": "non_blocking",
+        "description": "handleKeyDown has highlightedIndex in its dependency array, causing the callback to be recreated on every arrow key press. A more optimal approach would use a ref for highlightedIndex inside the handler (similar to the zoomRef pattern in map-view.tsx). This is not a functional issue — the search dropdown is lightweight and won't exhibit performance problems — but it's an inconsistency with the zoomRef optimization done in the same feature."
+      },
+      {
+        "file": "components/map/search-bar.tsx",
+        "line": 66,
+        "severity": "non_blocking",
+        "description": "When navigating with arrow keys, the highlighted item may scroll out of the visible area of the max-h-64 dropdown container. No scrollIntoView call is made on the highlighted element. Users with many search results would need to scroll manually to see the highlighted item. Minor UX gap."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "The map-worker skill procedure (step 6) instructs workers to do manual verification with agent-browser for all map features, but for code-level polish fixes (beforeId prop, ref refactor, keyboard events) this step adds overhead with minimal value since all behaviors are testable via unit tests. The skill could benefit from a note that manual browser verification is optional for non-visual code-level fixes that are fully covered by unit tests.",
+      "evidence": "Transcript shows worker ran pnpm test, pnpm typecheck, pnpm build but did not start dev server or use agent-browser. skillFeedback.followedProcedure is true, suggesting the worker considered browser verification unnecessary for this scope. The 10 new unit tests fully validate all three fixes."
+    },
+    {
+      "area": "conventions",
+      "observation": "The beforeId value 'water_name_point_label' is hardcoded as a string literal in map-view.tsx. If the map style's layer ordering changes (e.g., label layers are renamed or reordered in map-style.ts), this string will silently fail — MapLibre ignores invalid beforeId values and falls back to default ordering. Consider exporting the first label layer ID as a constant from map-style.ts.",
+      "evidence": "components/map/map-view.tsx:164 uses beforeId=\"water_name_point_label\" which must match lib/map/map-style.ts:754 id: \"water_name_point_label\". No shared constant or type safety between these two references."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "All three fixes are correctly implemented: fade layers render below text labels via beforeId, handleSelectPlace is stable via zoomRef pattern, and search dropdown has full arrow-key navigation with ARIA accessibility. 10 new tests added, all verification commands pass (test, typecheck, build). Two non-blocking issues noted: handleKeyDown callback recreates on every highlight change (minor perf inconsistency), and no scrollIntoView for keyboard-navigated items in the dropdown. Both are cosmetic and don't affect correctness."
+}

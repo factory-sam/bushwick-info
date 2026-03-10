@@ -28,6 +28,16 @@ Architectural decisions, patterns, and conventions discovered during the mission
 - EVA theme colors defined in Tailwind config under `nerv.*` namespace
 - All decorative overlays (scanlines, vignette, hex grid) use `pointer-events: none`
 
+## Responsive Dual-Panel Pattern
+
+The detail panel uses a dual-render approach for mobile vs desktop:
+- Mobile (`md:hidden`): bottom sheet with slide-up animation
+- Desktop (`hidden md:block`): side panel with slide-in animation
+- A shared `DetailContent` component avoids content duplication
+- Both panels exist in the DOM simultaneously; CSS toggles visibility
+- Tests use `getAllByTestId` instead of `getByTestId` to accommodate duplicate elements
+- Known limitation: screen readers may see both panels — add `aria-hidden` on the visually hidden variant in the future
+
 ## Bushwick Coordinates
 
 - Center: lat 40.6944, lng -73.9213

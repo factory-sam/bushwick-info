@@ -1,0 +1,39 @@
+{
+  "featureId": "responsive-mobile-polish",
+  "reviewedAt": "2026-03-10T05:00:00.000Z",
+  "commitId": "33393ac1443e99fa26583a9877377f664e586bed",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Solid implementation of responsive mobile polish. The detail panel was refactored into a dual-layout approach: a bottom sheet on mobile (<768px, via md:hidden) and a side panel on desktop (hidden md:block). A shared DetailContent component avoids code duplication. Touch targets on markers increased to 44x44px minimum. Viewport meta tag added via Next.js Viewport export. Filter/search bar spacing adjusted for mobile. Tests updated to handle dual DOM rendering. All changes follow existing project conventions (Tailwind utilities, EVA design system, clip-path corners, neon glow). Two non-blocking issues noted.",
+    "issues": [
+      {
+        "file": "app/layout.tsx",
+        "line": 34,
+        "severity": "non_blocking",
+        "description": "Viewport meta sets userScalable: false and maximumScale: 1, which disables browser-level pinch-to-zoom. This is a WCAG 2.1 SC 1.4.4 accessibility concern (users with low vision may need browser zoom). For a map app where pinch-to-zoom controls the map, this is a common tradeoff, but worth documenting the rationale. The feature spec says 'pinch-to-zoom works through overlays' which refers to map zoom, not browser zoom — so this is intentional but has an accessibility cost."
+      },
+      {
+        "file": "components/map/place-detail-panel.tsx",
+        "line": 27,
+        "severity": "non_blocking",
+        "description": "Both mobile and desktop detail panels are rendered simultaneously in the DOM (CSS hides one via md:hidden / hidden md:block). Screen readers will see both panels' content, which could create duplicate announcements. Consider adding aria-hidden on the visually hidden variant, or using a single panel with responsive CSS. Not blocking since the app is primarily a visual map experience, but an accessibility improvement for the future."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "The dual-panel rendering pattern (mobile + desktop variants both in DOM, CSS-toggled with md:hidden / hidden md:block) is a new pattern in this codebase. Tests were adapted to use getAllByTestId instead of getByTestId to accommodate duplicate elements. This pattern and the reasoning behind it (avoiding JS-based media query detection) could be documented in AGENTS.md or architecture.md to prevent future workers from being surprised by duplicate DOM elements in tests.",
+      "evidence": "components/map/place-detail-panel.tsx renders both mobile (line 27, md:hidden) and desktop (line 88, hidden md:block) panels. Tests at components/map/__tests__/place-detail-panel.test.tsx switched from getByTestId to getAllByTestId (lines 79, 86, 93, etc.)."
+    },
+    {
+      "area": "skills",
+      "observation": "Worker noted in skillFeedback.suggestedChanges that the ui-worker skill's 'write failing tests first (RED)' step doesn't align well with responsive CSS work, where changes are primarily visual and verified via browser screenshots rather than new unit tests. The skill could add a caveat for responsive/visual tasks.",
+      "evidence": "Handoff skillFeedback.suggestedChanges: 'The skill procedure says to write failing tests first (RED) but for responsive CSS changes, new tests aren't always needed — the changes are primarily CSS class modifications verified via browser screenshots.'"
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Feature passes review. The implementation correctly converts the detail panel to a mobile bottom sheet with slide-up animation, adds 44x44px touch targets on markers, configures the viewport meta tag, and adjusts mobile spacing. The shared DetailContent component is a clean refactoring that avoids duplication. All 5 files changed are well-structured and follow EVA design conventions. Two non-blocking issues noted: (1) userScalable:false disables browser zoom (accessibility tradeoff), and (2) dual-panel DOM rendering could confuse screen readers. Neither blocks the feature's stated requirements."
+}
