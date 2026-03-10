@@ -128,6 +128,6 @@ height: 4px;
 | Bars | NERV Orange | `#F0903A` |
 | Coffee | Entry Plug Green | `#58F2A5` |
 | Restaurants | MAGI Blue | `#54A2D4` |
-| Clubs | Eva Unit-01 Purple | `#765898` |
+| Clubs | Electric Violet | `#BF00FF` |
 | Stores | Eva Yellow | `#F6E201` |
 | Other | NERV Red | `#E81900` |

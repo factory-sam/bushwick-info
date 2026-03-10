@@ -27,7 +27,7 @@ export const CATEGORIES: Record<PlaceCategory, CategoryInfo> = {
   bars: { name: "Bars", color: "#F0903A" },
   coffee: { name: "Coffee", color: "#58F2A5" },
   restaurants: { name: "Restaurants", color: "#54A2D4" },
-  clubs: { name: "Clubs", color: "#765898" },
+  clubs: { name: "Clubs", color: "#BF00FF" },
   stores: { name: "Stores", color: "#F6E201" },
   other: { name: "Other", color: "#E81900" },
 };

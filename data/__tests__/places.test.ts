@@ -106,7 +106,7 @@ describe("CATEGORIES constant", () => {
     expect(CATEGORIES.bars.color).toBe("#F0903A");
     expect(CATEGORIES.coffee.color).toBe("#58F2A5");
     expect(CATEGORIES.restaurants.color).toBe("#54A2D4");
-    expect(CATEGORIES.clubs.color).toBe("#765898");
+    expect(CATEGORIES.clubs.color).toBe("#BF00FF");
     expect(CATEGORIES.stores.color).toBe("#F6E201");
     expect(CATEGORIES.other.color).toBe("#E81900");
   });
