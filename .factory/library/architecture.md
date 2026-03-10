@@ -10,7 +10,9 @@ Architectural decisions, patterns, and conventions discovered during the mission
 
 - **Framework:** Next.js (App Router)
 - **Map:** MapLibre GL JS v5 via react-map-gl v8 (`react-map-gl/maplibre` import path)
-- **Tiles:** OpenFreeMap (free, no API key) — `https://tiles.openfreemap.org/styles/liberty`
+- **Tiles:** OpenFreeMap (free, no API key)
+  - Vector tile source: `https://tiles.openfreemap.org/planet` (used for custom styles)
+  - Pre-built style: `https://tiles.openfreemap.org/styles/liberty` (not used — custom dark cyberpunk style built from scratch)
 - **Styling:** Tailwind CSS v4 with EVA color palette
 - **Animation:** Framer Motion (`motion` package)
 - **Fonts:** Google Fonts (Orbitron, Share Tech Mono, Rajdhani)

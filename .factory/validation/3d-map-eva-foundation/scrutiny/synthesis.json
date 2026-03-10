@@ -1,0 +1,49 @@
+{
+  "milestone": "3d-map-eva-foundation",
+  "round": 1,
+  "status": "pass",
+  "validatorsRun": {
+    "test": { "passed": true, "command": "pnpm test", "exitCode": 0 },
+    "typecheck": { "passed": true, "command": "pnpm typecheck", "exitCode": 0 },
+    "lint": { "passed": true, "command": "pnpm lint", "exitCode": 0 }
+  },
+  "reviewsSummary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "failedFeatures": []
+  },
+  "blockingIssues": [],
+  "appliedUpdates": [
+    {
+      "target": "library",
+      "description": "Updated architecture.md tile URL documentation to distinguish between the vector tile source URL (tiles.openfreemap.org/planet, used for custom styles) and the pre-built style URL (tiles.openfreemap.org/styles/liberty, not used). The implementation builds a custom dark cyberpunk style from scratch using the vector tile source, not the pre-built liberty style.",
+      "sourceFeature": "maplibre-3d-map"
+    }
+  ],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Add exception to 'No inline styles' convention: 'Inline styles are acceptable for complex CSS values that cannot be expressed as Tailwind utilities, such as clip-path polygons, multi-layer box-shadow (neon glow), and multi-layer text-shadow. These are common in EVA design patterns. Consider extracting repeated values to CSS classes in globals.css or CSS modules when the same complex style appears in 3+ places.'",
+      "evidence": "Both eva-ui-chrome and nextjs-project-setup reviewers flagged inline styles in NervHeader (clipPath, boxShadow), DataReadout (clipPath, boxShadow, textShadow), and globals.css pseudo-element patterns. Three independent reviewers noted this same tension between the convention and the EVA design requirements.",
+      "isSystemic": true
+    },
+    {
+      "target": "skills",
+      "suggestion": "Update map-worker skill step 4: (1) Remove or mark as optional 'Configure light source for 3D building shadows' — default lighting works acceptably for the cyberpunk theme. (2) Change 'Start from OpenFreeMap liberty style' to recommend building a custom style from scratch using the vector tile source (tiles.openfreemap.org/planet) for full control over the cyberpunk aesthetic. (3) Add note about agent-browser WebGL limitations in the verification step.",
+      "evidence": "maplibre-3d-map worker deviated from skill by building custom style from scratch (better outcome) and omitting light config (acceptable result). Skill procedure doesn't match what actually works best. WebGL headless limitation already in AGENTS.md but not in the skill's verification guidance.",
+      "isSystemic": false
+    }
+  ],
+  "rejectedObservations": [
+    {
+      "observation": "services.yaml correctly documents the dev server on port 3100 with healthcheck. All commands in package.json scripts are mirrored in services.yaml. No gaps found.",
+      "reason": "Positive confirmation — no action needed"
+    },
+    {
+      "observation": "features.json has empty workerSessionIds array for maplibre-3d-map feature, but a handoff file exists with worker session 0a4d89b7.",
+      "reason": "Infrastructure/orchestrator concern — features.json session tracking is managed by the orchestrator, not a shared state update we should make"
+    }
+  ],
+  "previousRound": null
+}

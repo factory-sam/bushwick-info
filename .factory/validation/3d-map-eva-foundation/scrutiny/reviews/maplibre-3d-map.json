@@ -1,0 +1,72 @@
+{
+  "featureId": "maplibre-3d-map",
+  "reviewedAt": "2026-03-10T03:15:00.000Z",
+  "commitId": "69aeed3",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Solid implementation of the core 3D map feature. MapLibre GL JS v5.19.0 is used via react-map-gl/maplibre with a comprehensive custom dark cyberpunk style built from scratch using OpenFreeMap vector tiles. 3D building fill-extrusion layer correctly uses render_height with EVA color interpolation. Map is centered on Bushwick (40.6944, -73.9213) with pitch 50°, bearing -15°, zoom 15, and bounds 12-18. Dynamic import with ssr:false is properly implemented. Test coverage includes 28 tests across 3 files covering style generation, component structure, and page layout. All requirements met.",
+    "issues": [
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 29,
+        "severity": "non_blocking",
+        "description": "createDarkMapStyle() is called on every render without useMemo. Since viewState changes on every map move event, this creates a new (large) style object on each frame during pan/zoom. While MapLibre likely diffs internally, this is unnecessary object allocation. Should be wrapped in useMemo with empty deps: `const mapStyle = useMemo(() => createDarkMapStyle(), []);`"
+      },
+      {
+        "file": "lib/map/map-style.ts",
+        "line": 8,
+        "severity": "non_blocking",
+        "description": "LayerSpec type is Record<string, any>, bypassing TypeScript type safety for all layer definitions. The eslint-disable acknowledges this, but it means layer property errors (e.g., misspelled paint properties) won't be caught at compile time. A more precise type or at minimum LayerSpecification from maplibre-gl could be used directly."
+      },
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 51,
+        "severity": "non_blocking",
+        "description": "Inline style={{ width: '100%', height: '100%' }} on Map component. AGENTS.md convention says 'No inline styles — use Tailwind utility classes or CSS modules'. However, this is a standard pattern for react-map-gl's style prop and is pragmatically acceptable."
+      },
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 52,
+        "severity": "non_blocking",
+        "description": "attributionControl={false} disables map attribution. OpenFreeMap is based on OpenStreetMap data which requires attribution under ODbL license. The custom CSS in map-controls.css already styles the attribution control for the EVA theme, suggesting attribution was intended to be shown. Consider setting attributionControl={true} or adding a custom compact attribution."
+      },
+      {
+        "file": "lib/map/map-style.ts",
+        "line": 56,
+        "severity": "non_blocking",
+        "description": "No 'light' property configured in the style specification. The map-worker skill procedure step 4 mentions 'Configure light source for 3D building shadows', but the style relies on MapLibre's default lighting. This doesn't break functionality but misses an opportunity for more dramatic 3D building rendering consistent with the cyberpunk theme."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "features.json has empty workerSessionIds array for maplibre-3d-map feature, but a handoff file exists with worker session 0a4d89b7-a6c5-4722-8b61-1ffb39d63b1a. The feature metadata doesn't track the session that completed the work.",
+      "evidence": "features.json maplibre-3d-map has workerSessionIds: [] and completedWorkerSessionId: null, but handoff file 2026-03-10T02-38-02-642Z__maplibre-3d-map__0a4d89b7-a6c5-4722-8b61-1ffb39d63b1a.json exists with successState: success"
+    },
+    {
+      "area": "knowledge",
+      "observation": "architecture.md documents OpenFreeMap tiles URL as 'https://tiles.openfreemap.org/styles/liberty' (a style endpoint), but the implementation uses 'https://tiles.openfreemap.org/planet' (a vector tile source endpoint) because a fully custom style was built from scratch. The library should clarify the distinction between the style URL and the tile source URL.",
+      "evidence": ".factory/library/architecture.md says 'Tiles: OpenFreeMap — https://tiles.openfreemap.org/styles/liberty' vs lib/map/map-style.ts line 72 uses url: 'https://tiles.openfreemap.org/planet'"
+    },
+    {
+      "area": "skills",
+      "observation": "The map-worker skill procedure step 4 says 'Configure light source for 3D building shadows' but the implementation omits this. The skill should either remove this step or mark it as optional, since default lighting works acceptably.",
+      "evidence": ".factory/skills/map-worker/SKILL.md step 4 vs lib/map/map-style.ts createDarkMapStyle() — no light property in the returned StyleSpecification"
+    },
+    {
+      "area": "skills",
+      "observation": "The map-worker skill says to start from 'OpenFreeMap liberty style' and override colors, but the worker built a custom style from scratch using only the vector tile source. Building from scratch is arguably better (full control), but the skill should be updated to reflect this preferred approach.",
+      "evidence": ".factory/skills/map-worker/SKILL.md step 4: 'Start from OpenFreeMap liberty style' vs actual implementation that constructs all layers manually in lib/map/map-style.ts"
+    },
+    {
+      "area": "skills",
+      "observation": "Worker's skillFeedback.suggestedChanges notes that agent-browser WebGL verification may fail in headless environments. This is already documented in AGENTS.md under 'Known Pre-Existing Issues' but is not mentioned in the map-worker skill itself.",
+      "evidence": "Handoff skillFeedback.suggestedChanges[0] says to add WebGL headless guidance to the skill; AGENTS.md already has this under 'Known Pre-Existing Issues' but .factory/skills/map-worker/SKILL.md step 6 doesn't mention it"
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "The maplibre-3d-map feature passes review. All core requirements are met: MapLibre GL JS v5 integration via react-map-gl, comprehensive custom dark cyberpunk style with EVA/NERV colors, 3D building extrusions with height-driven color interpolation, OpenFreeMap vector tiles, proper camera configuration centered on Bushwick, dynamic import with ssr:false, and 28 passing tests. Five non-blocking issues identified: unmemoized style creation on every render, loose TypeScript typing for layers, inline style on Map component, disabled attribution control (potential licensing concern), and missing light configuration for 3D buildings. None are blocking for milestone completion."
+}

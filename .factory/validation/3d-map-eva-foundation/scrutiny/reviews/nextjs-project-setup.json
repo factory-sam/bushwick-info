@@ -1,0 +1,39 @@
+{
+  "featureId": "nextjs-project-setup",
+  "reviewedAt": "2026-03-10T03:15:00.000Z",
+  "commitId": "ed15c48c6fbf06137394117b3284ef4aefe933fc",
+  "transcriptSkeletonReviewed": false,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "Solid Next.js 15 project initialization with App Router, TypeScript strict mode, Tailwind CSS v4, Vitest, and ESLint. All expected dependencies are present and correctly configured. The setup follows modern best practices: CSS-first Tailwind v4 config via @theme, flat ESLint config, bundler module resolution, and comprehensive strict TypeScript flags (noUncheckedIndexedAccess, noUnusedLocals, noUnusedParameters). The test infrastructure includes jsdom environment, React Testing Library with jest-dom matchers, and a working smoke test that correctly mocks MapLibre's WebGL dependency. Port 3100 is configured as required by mission boundaries.",
+    "issues": [
+      {
+        "file": "app/page.tsx",
+        "line": 1,
+        "severity": "non_blocking",
+        "description": "The root page.tsx uses 'use client' directive making the entire page a client component. While necessary for useState/useCallback hooks used here, this means no server-side rendering benefit for the page shell. This is acceptable for a full-screen map application where client-side interactivity dominates."
+      },
+      {
+        "file": ".gitignore",
+        "line": 21,
+        "severity": "non_blocking",
+        "description": "next-env.d.ts is listed in .gitignore but was committed in this initial commit (visible in git show --stat). This is actually the standard Next.js recommendation (the file is auto-generated and regenerated on build), but it means it may show as modified after builds. Very minor inconsistency."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "AGENTS.md documents 'No inline styles — use Tailwind utility classes or CSS modules' but the project also uses raw CSS in globals.css for scanline and vignette effects (added in a later commit but enabled by this setup). The convention could clarify that globals.css is acceptable for pseudo-element patterns that Tailwind can't express.",
+      "evidence": "app/globals.css lines 17-42 contain raw CSS for .scanlines::after and .crt-vignette::after pseudo-elements, which is appropriate since Tailwind cannot generate ::after pseudo-element styles with complex backgrounds."
+    },
+    {
+      "area": "services",
+      "observation": "services.yaml correctly documents the dev server on port 3100 with healthcheck. All commands in package.json scripts are mirrored in services.yaml. No gaps found.",
+      "evidence": ".factory/services.yaml lists install, dev, build, test, lint, typecheck commands matching package.json scripts."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "The Next.js project setup is well-executed. All required dependencies are present (Next.js 15, React 19, TypeScript 5.8, Tailwind CSS v4, Vitest 3.1, ESLint 9). TypeScript is configured with strict mode plus additional safety flags. Tailwind v4 uses the modern CSS-first configuration pattern with @import 'tailwindcss' and @theme block for custom EVA color palette. Vitest is properly configured with jsdom, React plugin, path aliases, and Testing Library integration. ESLint uses the flat config format with Next.js recommended presets. The dev server runs on port 3100 as required. Two non-blocking observations noted: the root page being a client component (justified by map interactivity needs) and a minor .gitignore inconsistency with next-env.d.ts. No transcript was available as this feature was completed during initial project setup outside of a worker session."
+}
