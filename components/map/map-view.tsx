@@ -175,7 +175,7 @@ export default function MapView({ onMove }: MapViewProps) {
       </Map>
 
       {/* Category filter bar and search — positioned top-right over the map */}
-      <div className="pointer-events-none absolute right-0 top-14 z-20 flex w-full flex-col gap-2 px-3 md:w-96 md:px-4">
+      <div className="pointer-events-none absolute right-0 top-16 z-20 flex w-full flex-col gap-1.5 px-3 md:top-14 md:w-96 md:gap-2 md:px-4">
         <SearchBar
           places={places}
           activeCategories={activeCategories}

@@ -84,6 +84,8 @@ export function PlaceMarkers({ onSelectPlace, selectedPlaceId, visiblePlaces }: 
                   handleMarkerClick(place);
                 }
               }}
+              /* Invisible touch target ensures minimum 44x44px tappable area on mobile */
+              style={{ minWidth: "44px", minHeight: "44px" }}
             >
               {/* Targeting reticle — shown on hover or lock-on */}
               {(isHovered || isLocking) && (

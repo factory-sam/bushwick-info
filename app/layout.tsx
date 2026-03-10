@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Orbitron, Rajdhani, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -26,6 +26,13 @@ const rajdhani = Rajdhani({
 export const metadata: Metadata = {
   title: "BUSHWICK // MAP",
   description: "Interactive 3D map of Bushwick, Brooklyn — EVA/Cyberpunk Theme",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

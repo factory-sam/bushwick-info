@@ -75,29 +75,40 @@ describe("PlaceDetailPanel", () => {
 
   it("displays the place name", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    expect(screen.getByTestId("detail-place-name")).toHaveTextContent("Test Venue");
+    // Both mobile and desktop panels render in DOM (CSS hides one) — check first match
+    const names = screen.getAllByTestId("detail-place-name");
+    expect(names.length).toBeGreaterThanOrEqual(1);
+    expect(names[0]).toHaveTextContent("Test Venue");
   });
 
   it("displays the description", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    expect(screen.getByTestId("detail-description")).toHaveTextContent(
+    const descriptions = screen.getAllByTestId("detail-description");
+    expect(descriptions.length).toBeGreaterThanOrEqual(1);
+    expect(descriptions[0]).toHaveTextContent(
       "A great place to visit in Bushwick."
     );
   });
 
   it("displays the category badge", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    expect(screen.getByTestId("detail-category-badge")).toHaveTextContent("Bars");
+    const badges = screen.getAllByTestId("detail-category-badge");
+    expect(badges.length).toBeGreaterThanOrEqual(1);
+    expect(badges[0]).toHaveTextContent("Bars");
   });
 
   it("displays address", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    expect(screen.getByText("123 Test St, Brooklyn, NY 11237")).toBeInTheDocument();
+    const addresses = screen.getAllByText("123 Test St, Brooklyn, NY 11237");
+    expect(addresses.length).toBeGreaterThanOrEqual(1);
+    expect(addresses[0]).toBeInTheDocument();
   });
 
   it("displays hours when present", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    expect(screen.getByText("Mon-Fri 5 PM-12 AM")).toBeInTheDocument();
+    const hours = screen.getAllByText("Mon-Fri 5 PM-12 AM");
+    expect(hours.length).toBeGreaterThanOrEqual(1);
+    expect(hours[0]).toBeInTheDocument();
   });
 
   it("omits hours when not present", () => {
@@ -107,7 +118,10 @@ describe("PlaceDetailPanel", () => {
 
   it("displays website link when present with correct attributes", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    const link = screen.getByTestId("detail-website-link");
+    // Both mobile and desktop panels have the link — check first match
+    const links = screen.getAllByTestId("detail-website-link");
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    const link = links[0]!;
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "https://example.com");
     expect(link).toHaveAttribute("target", "_blank");
@@ -129,7 +143,8 @@ describe("PlaceDetailPanel", () => {
 
   it("displays formatted URL (without protocol)", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
-    const link = screen.getByTestId("detail-website-link");
-    expect(link).toHaveTextContent("example.com");
+    const links = screen.getAllByTestId("detail-website-link");
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    expect(links[0]).toHaveTextContent("example.com");
   });
 });
