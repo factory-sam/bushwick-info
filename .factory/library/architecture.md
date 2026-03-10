@@ -31,4 +31,6 @@ Architectural decisions, patterns, and conventions discovered during the mission
 ## Bushwick Coordinates
 
 - Center: lat 40.6944, lng -73.9213
-- Bounding box: roughly 40.680-40.710 lat, 73.900-73.940 lng
+- Visible area: roughly 40.680-40.715 lat, -73.890 to -73.945 lng (includes Bushwick + parts of Ridgewood, N. Bed-Stuy, E. Williamsburg)
+- maxBounds (with padding): roughly 40.675-40.720 lat, -73.885 to -73.950 lng
+- Areas outside visible area should fade to dark via overlay or fog
