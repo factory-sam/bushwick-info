@@ -24,6 +24,11 @@ export const DEFAULT_VIEW_STATE = {
 export const MAP_BOUNDS = {
   minZoom: 12,
   maxZoom: 18,
+  /** maxBounds restricts panning to greater Bushwick area. [lng, lat] format. */
+  maxBounds: {
+    sw: [-73.950, 40.675] as readonly [number, number],
+    ne: [-73.885, 40.720] as readonly [number, number],
+  },
 } as const;
 
 // EVA color palette
