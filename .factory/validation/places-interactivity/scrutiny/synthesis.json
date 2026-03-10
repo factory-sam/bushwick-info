@@ -1,25 +1,19 @@
 {
   "milestone": "places-interactivity",
-  "round": 1,
-  "status": "fail",
+  "round": 2,
+  "status": "pass",
   "validatorsRun": {
     "test": { "passed": true, "command": "pnpm test", "exitCode": 0 },
     "typecheck": { "passed": true, "command": "pnpm typecheck", "exitCode": 0 },
     "lint": { "passed": true, "command": "pnpm lint", "exitCode": 0 }
   },
   "reviewsSummary": {
-    "total": 4,
-    "passed": 3,
-    "failed": 1,
-    "failedFeatures": ["map-boundary-fade"]
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "failedFeatures": []
   },
-  "blockingIssues": [
-    {
-      "featureId": "map-boundary-fade",
-      "severity": "blocking",
-      "description": "Inverted east/west coordinate expansion in fade ring generation (lib/map/map-bounds.ts ~lines 100-101, 104-105, 128-131, 134-135). The code does `east - offset` and `west + offset` but since east longitude is -73.890 (negative), subtracting makes it MORE negative (moves west), and adding to west makes it LESS negative (moves east). Correct logic: `east + offset` to go east, `west - offset` to go west. This causes fade ring polygons to shrink in E-W dimension instead of expanding, so the fade effect only works on north/south edges. Fix: swap the +/- signs for all east/west offset calculations in createBoundaryFadeGeoJSON(). Also fix the misleading inline comments. Add geometric validity test assertions (outer.east > inner.east, outer.west < inner.west for each ring band)."
-    }
-  ],
+  "blockingIssues": [],
   "nonBlockingIssues": [
     {
       "featureId": "map-boundary-fade",
@@ -44,17 +38,12 @@
     {
       "featureId": "category-filters-search",
       "severity": "non_blocking",
-      "description": "handleSelectPlace useCallback depends on viewState.zoom (same issue as markers feature, shared code in map-view.tsx)."
+      "description": "No arrow-key keyboard navigation in search dropdown results."
     },
     {
       "featureId": "category-filters-search",
       "severity": "non_blocking",
-      "description": "No arrow-key keyboard navigation in search dropdown results. Users can Tab through results but arrow-key nav is a common UX pattern."
-    },
-    {
-      "featureId": "category-filters-search",
-      "severity": "non_blocking",
-      "description": "Inline fontSize: '10px' in search-bar.tsx for category label — could use Tailwind text-[10px] for consistency (very minor)."
+      "description": "Inline fontSize: '10px' in search-bar.tsx for category label — could use Tailwind text-[10px] for consistency."
     },
     {
       "featureId": "places-data-as-code",
@@ -72,7 +61,7 @@
     {
       "target": "AGENTS.md",
       "suggestion": "Add convention note about negative longitude coordinate math: 'When expanding bounds in the NYC area (negative longitudes), adding to longitude moves east (less negative) and subtracting moves west (more negative). Example: -73.890 + 0.01 = -73.880 (east), -73.945 - 0.01 = -73.955 (west).'",
-      "evidence": "lib/map/map-bounds.ts had inverted east/west expansion logic with incorrect comments ('East is negative, subtract to go east'). Worker got confused by negative coordinate system.",
+      "evidence": "lib/map/map-bounds.ts had inverted east/west expansion logic with incorrect comments ('East is negative, subtract to go east'). Worker got confused by negative coordinate system. Fix feature fix-boundary-fade-coordinates corrected all 4 locations.",
       "isSystemic": false
     },
     {
@@ -92,13 +81,23 @@
       "suggestion": "Add exception to fullstack-worker skill's TDD step: 'For pure data layer features where tests must import the data module, create the data file first, then write tests. TDD is impractical when the test file cannot compile without the data exports.'",
       "evidence": "places-data-as-code worker created data/places.ts before tests. Worker claimed followedProcedure: true despite this deviation.",
       "isSystemic": false
+    },
+    {
+      "target": "skills",
+      "suggestion": "Note in map-worker skill that step 6 (agent-browser manual verification) can be skipped for pure utility/math fixes that are fully verifiable via unit tests.",
+      "evidence": "fix-boundary-fade-coordinates worker skipped browser verification for a coordinate math fix. Reasonable deviation — the fix was fully tested by geometric assertions in map-bounds.test.ts.",
+      "isSystemic": false
     }
   ],
   "rejectedObservations": [
     {
       "observation": "The places data exports the array as a named export 'places' (lowercase). This is fine and follows JS conventions for non-component exports.",
       "reason": "Not actionable — just noting an existing pattern that's already consistent with TypeScript conventions. No documentation needed."
+    },
+    {
+      "observation": "Negative longitude coordinate math convention already suggested in round 1",
+      "reason": "duplicate — carried forward from round 1 suggestion, merged into suggestedGuidanceUpdates"
     }
   ],
-  "previousRound": null
+  "previousRound": ".factory/validation/places-interactivity/scrutiny/synthesis-round1.json"
 }

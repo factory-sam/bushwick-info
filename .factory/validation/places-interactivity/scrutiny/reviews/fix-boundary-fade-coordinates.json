@@ -1,0 +1,39 @@
+{
+  "featureId": "fix-boundary-fade-coordinates",
+  "reviewedAt": "2026-03-10T04:59:00.000Z",
+  "commitId": "98dcab7",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "The fix correctly addresses the blocking coordinate math bug identified in the prior review of map-boundary-fade. All 4 locations (8 lines total — east+west at each location) in createBoundaryFadeGeoJSON() were corrected: east expansion changed from subtraction to addition, west expansion changed from addition to subtraction. Inline comments were updated to accurately explain the math. Two new geometric validity tests were added that directly verify the properties the original review flagged as missing: (1) outer bounds expand beyond inner bounds in all 4 directions for every ring, and (2) rings expand concentrically. All 129 tests pass and build succeeds.",
+    "issues": [
+      {
+        "file": "lib/map/map-bounds.ts",
+        "line": 70,
+        "severity": "non_blocking",
+        "description": "Pre-existing: Winding order comments in createRingPolygon() are still incorrect (line 70 says 'counter-clockwise = fill area' but coords trace clockwise; line 77 says 'clockwise = hole' but coords trace counter-clockwise). This was flagged in the original review as non-blocking and was not in scope for this fix feature, so it's expected to remain."
+      },
+      {
+        "file": "components/map/map-view.tsx",
+        "line": 70,
+        "severity": "non_blocking",
+        "description": "Pre-existing: Fade layers still render on top of all map style layers including text labels (no beforeId prop). This was flagged as non-blocking in the original review and is outside the scope of this coordinate math fix."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "skills",
+      "observation": "Worker's skillFeedback suggests that step 6 (agent-browser manual verification) should be noted as optional for non-visual utility/math fixes. The worker skipped browser verification with reasonable justification — this was a pure coordinate math fix fully verifiable via unit tests. The map-worker skill could document when browser verification can be skipped.",
+      "evidence": "skillFeedback.suggestedChanges: 'Map worker skill step 6 (manual agent-browser verification) was skipped since this is a pure math/coordinate bug fix with no visual component that can't be verified via unit tests. The skill could note that browser verification is optional for non-visual utility fixes.'"
+    },
+    {
+      "area": "conventions",
+      "observation": "The original review's observation about negative longitude coordinate math being error-prone remains relevant. AGENTS.md documents Bushwick coordinates but doesn't warn about the counterintuitive arithmetic with negative longitudes. A convention note could prevent similar bugs.",
+      "evidence": "The original bug was caused by incorrect reasoning about negative longitude arithmetic (subtracting from a negative number to 'go east'). The fix correctly adds to east longitude and subtracts from west longitude. A brief note in AGENTS.md under MapLibre Configuration about longitude expansion direction would help."
+    }
+  ],
+  "addressesFailureFrom": ".factory/validation/places-interactivity/scrutiny/reviews/map-boundary-fade.json",
+  "summary": "PASS — The fix correctly resolves the blocking coordinate inversion bug from the prior map-boundary-fade review. All 4 east/west expansion locations in createBoundaryFadeGeoJSON() were corrected (east uses + offset, west uses - offset), inline comments updated, and 2 new geometric validity tests added that would catch any future regression. The fix is minimal, focused, and verified — 129 tests pass and build succeeds. Two pre-existing non-blocking issues (winding order comments, fade layer ordering) remain but were correctly out of scope for this fix."
+}
