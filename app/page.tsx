@@ -1,9 +1,19 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import DynamicMap from "@/components/map/dynamic-map";
+import type { MapMoveEvent } from "@/components/map/map-view";
+
 export default function Home() {
+  const [_mapState, setMapState] = useState<MapMoveEvent | null>(null);
+
+  const handleMove = useCallback((event: MapMoveEvent) => {
+    setMapState(event);
+  }, []);
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-nerv-deep-purple">
-      <h1 className="font-display text-5xl font-bold uppercase tracking-[0.1em] text-nerv-orange">
-        BUSHWICK // MAP
-      </h1>
+    <main className="relative h-screen w-screen overflow-hidden bg-nerv-deep-purple">
+      <DynamicMap onMove={handleMove} />
     </main>
   );
 }
