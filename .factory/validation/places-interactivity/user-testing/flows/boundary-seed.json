@@ -1,0 +1,157 @@
+{
+  "groupId": "boundary-seed",
+  "testedAt": "2026-03-10T00:00:00.000Z",
+  "credentials": {
+    "account": "none",
+    "namespace": "boundary-seed"
+  },
+  "toolsUsed": ["agent-browser", "file-read"],
+  "assertions": [
+    {
+      "id": "VAL-MAP-007",
+      "title": "Map boundary fade-out effect",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Read lib/map/map-bounds.ts source code",
+          "expected": "FADE_AREA defines Bushwick boundaries (~40.680-40.715 N, 73.890-73.945 W)",
+          "observed": "FADE_AREA: north=40.715, south=40.680, east=-73.890, west=-73.945 — matches specification"
+        },
+        {
+          "action": "Verify FADE_RINGS graduated opacity configuration",
+          "expected": "Multiple concentric rings with increasing opacity for smooth fade",
+          "observed": "7 rings defined: opacity 0.0 (inner transparent) → 0.15 → 0.30 → 0.50 → 0.70 → 0.85 → 0.95 (near-opaque outer)"
+        },
+        {
+          "action": "Verify createBoundaryFadeGeoJSON() creates ring polygons",
+          "expected": "GeoJSON FeatureCollection with polygon ring bands around Bushwick area",
+          "observed": "Function creates 7 concentric ring polygon features (outer hole rings) plus outermost ring extending 1.0° beyond. Each feature has a 'ring' property for layer filtering."
+        },
+        {
+          "action": "Verify createBoundaryFadeLayers() creates MapLibre fill layers",
+          "expected": "Fill layers with dark color and graduated opacity for each ring",
+          "observed": "Creates fill layers: boundary-fade-ring-1 through boundary-fade-ring-7, fill-color=#0a0a1a (dark purple-black), fill-opacity matching FADE_RINGS opacity values"
+        },
+        {
+          "action": "Verify map-view.tsx integrates boundary fade source and layers",
+          "expected": "Source id='boundary-fade' with Layer components rendered inside Map",
+          "observed": "<Source id='boundary-fade' type='geojson' data={fadeGeoJSON}> with {fadeLayers.map(layer => <Layer .../>)} — correctly integrated"
+        },
+        {
+          "action": "Navigate to http://localhost:3100 and take screenshot",
+          "expected": "Map loads with visual boundary effect",
+          "observed": "Map loaded successfully. Screenshot taken. WebGL canvas present (rendering limited in headless Chrome as documented)."
+        }
+      ],
+      "evidence": {
+        "screenshots": ["boundary-fade-overview.png", "boundary-map-loaded.png"],
+        "consoleErrors": "none",
+        "codeVerification": "lib/map/map-bounds.ts: FADE_AREA={north:40.715,south:40.680,east:-73.890,west:-73.945}, 7 FADE_RINGS (opacity 0.0→0.95), createBoundaryFadeGeoJSON() generates concentric ring polygons, createBoundaryFadeLayers() generates fill layers with #0a0a1a color",
+        "domVerification": "map-view.tsx: <Source id='boundary-fade'> with <Layer> components for each fade ring rendered inside <Map>"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-MAP-008",
+      "title": "Map pan bounds restrict navigation",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Read MAP_BOUNDS.maxBounds from lib/map/map-style.ts",
+          "expected": "maxBounds defined with sw and ne corners covering Bushwick area (~40.675-40.720 lat, -73.885 to -73.950 lng)",
+          "observed": "MAP_BOUNDS.maxBounds = { sw: [-73.950, 40.675], ne: [-73.885, 40.720] } — matches specification"
+        },
+        {
+          "action": "Verify maxBounds is passed to Map component in map-view.tsx",
+          "expected": "maxBounds prop set on <Map> component",
+          "observed": "maxBounds={maxBounds} prop present on <Map> component, computed from MAP_BOUNDS.maxBounds.sw and .ne"
+        },
+        {
+          "action": "Evaluate React props via JS to confirm maxBounds is active at runtime",
+          "expected": "maxBounds property found in React component props",
+          "observed": "React fiber props show maxBoundsFromProps: [[-73.95, 40.675], [-73.885, 40.72]] — matches MAP_BOUNDS configuration"
+        },
+        {
+          "action": "Verify Manhattan (~40.758, -73.985) is outside maxBounds",
+          "expected": "Manhattan coordinates fall outside the maxBounds rectangle",
+          "observed": "Manhattan lat 40.758 > ne lat 40.720, Manhattan lng -73.985 < sw lng -73.950 — both dimensions outside bounds, confirming user cannot navigate there"
+        },
+        {
+          "action": "Verify minZoom and maxZoom are also constrained",
+          "expected": "Zoom bounds defined to prevent zooming too far in/out",
+          "observed": "minZoom=12, maxZoom=18 defined in MAP_BOUNDS and applied to <Map> component"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["boundary-map-loaded.png"],
+        "consoleErrors": "none",
+        "jsEval": "React fiber props confirm maxBounds=[[-73.95,40.675],[-73.885,40.72]] active on Map component at runtime",
+        "codeVerification": "lib/map/map-style.ts: MAP_BOUNDS.maxBounds={sw:[-73.950,40.675],ne:[-73.885,40.720]}, minZoom=12, maxZoom=18. map-view.tsx: maxBounds={maxBounds} prop on <Map>"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-010",
+      "title": "Seed data exists",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Read data/places.ts and count total places",
+          "expected": "21 curated Bushwick places",
+          "observed": "21 places found in the places array"
+        },
+        {
+          "action": "Verify 6 categories are represented",
+          "expected": "clubs, bars, coffee, restaurants, stores, other",
+          "observed": "All 6 categories present: clubs (4), bars (6), coffee (2), restaurants (3), stores (2), other (4) = 21 total"
+        },
+        {
+          "action": "Verify all coordinates within Bushwick area (~40.680-40.715°N, 73.890-73.945°W)",
+          "expected": "All lat values between ~40.680-40.715, all lng values between ~-73.890 and -73.945",
+          "observed": "All 21 places have valid coordinates within Bushwick area. Lat range: 40.6932 (Wonderville) to 40.7115 (Refuge). Lng range: -73.9384 (Ornithology) to -73.9059 (TV Eye). All within bounds."
+        },
+        {
+          "action": "Verify places include real Bushwick destinations",
+          "expected": "Recognizable real-world Bushwick venues",
+          "observed": "All places are real Bushwick destinations: House of Yes, SEY Coffee, Ops Pizza, Maria Hernandez Park, Mood Ring, Jupiter Disco, Wonderville, etc."
+        },
+        {
+          "action": "Verify CATEGORIES constant defines all 6 categories with colors",
+          "expected": "Category map with display names and marker colors",
+          "observed": "CATEGORIES record defines: bars (#F0903A), coffee (#58F2A5), restaurants (#54A2D4), clubs (#765898), stores (#F6E201), other (#E81900)"
+        },
+        {
+          "action": "Verify Place interface has required fields",
+          "expected": "id, name, description, category, address, lat, lng, optional hours/website",
+          "observed": "Place interface: id(string), name(string), description(string), category(PlaceCategory), address(string), lat(number), lng(number), hours?(string), website?(string). All places conform."
+        }
+      ],
+      "evidence": {
+        "fileCheck": "data/places.ts: 21 places across 6 categories (clubs:4, bars:6, coffee:2, restaurants:3, stores:2, other:4). All coordinates within Bushwick bounds. All real destinations.",
+        "categories": ["clubs", "bars", "coffee", "restaurants", "stores", "other"],
+        "placeCount": 21,
+        "coordinateRange": {
+          "lat": { "min": 40.6932, "max": 40.7115 },
+          "lng": { "min": -73.9384, "max": -73.9059 }
+        }
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "MapLibre map instance is not directly accessible via JS evaluation in headless Chrome — react-map-gl encapsulates the instance internally. map.getMaxBounds() cannot be called directly; React fiber props were used as alternative evidence.",
+      "resolved": true,
+      "resolution": "Used React fiber traversal to extract maxBounds from component props, plus source code verification of MAP_BOUNDS configuration",
+      "affectedAssertions": ["VAL-MAP-007", "VAL-MAP-008"]
+    },
+    {
+      "description": "WebGL canvas may be blank in headless Chrome (documented known limitation), so visual fade effect cannot be confirmed via screenshot alone.",
+      "resolved": true,
+      "resolution": "Used source code verification of FADE_AREA, FADE_RINGS, createBoundaryFadeGeoJSON(), createBoundaryFadeLayers(), and map-view.tsx integration as primary evidence per AGENTS.md guidance",
+      "affectedAssertions": ["VAL-MAP-007"]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested 3 assertions: all 3 passed. VAL-MAP-007 (boundary fade) verified via source code showing 7 graduated fade rings with opacity 0→0.95 around FADE_AREA bounds, integrated as GeoJSON source+layers in map-view.tsx. VAL-MAP-008 (pan bounds) verified via React props confirming maxBounds=[[-73.95,40.675],[-73.885,40.72]] active at runtime, preventing navigation to Manhattan. VAL-CROSS-010 (seed data) verified by reading data/places.ts: 21 places across 6 categories with valid Bushwick coordinates."
+}

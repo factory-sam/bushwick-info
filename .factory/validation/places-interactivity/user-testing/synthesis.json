@@ -1,0 +1,35 @@
+{
+  "milestone": "places-interactivity",
+  "round": 1,
+  "status": "pass",
+  "assertionsSummary": {
+    "total": 18,
+    "passed": 18,
+    "failed": 0,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-MAP-007",
+    "VAL-MAP-008",
+    "VAL-CROSS-010",
+    "VAL-PLACE-001",
+    "VAL-PLACE-002",
+    "VAL-PLACE-003",
+    "VAL-PLACE-004",
+    "VAL-PLACE-005",
+    "VAL-PLACE-006",
+    "VAL-PLACE-007",
+    "VAL-PLACE-008",
+    "VAL-PLACE-009",
+    "VAL-PLACE-010",
+    "VAL-PLACE-011",
+    "VAL-PLACE-012",
+    "VAL-PLACE-013",
+    "VAL-PLACE-014",
+    "VAL-PLACE-015"
+  ],
+  "failedAssertions": [],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": null
+}

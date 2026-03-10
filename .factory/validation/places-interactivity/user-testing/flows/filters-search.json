@@ -1,0 +1,177 @@
+{
+  "groupId": "filters-search",
+  "testedAt": "2026-03-10T12:00:00.000Z",
+  "credentials": {
+    "account": "none (public map, no auth)",
+    "namespace": "filters-search"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLACE-006",
+      "title": "Category filter toggles marker visibility",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to http://localhost:3100, wait for load",
+          "expected": "Page loads with all 6 category filter buttons active",
+          "observed": "All 6 filter buttons rendered with aria-pressed=true and neon glow styling"
+        },
+        {
+          "action": "Click Bars filter button to toggle off",
+          "expected": "Button becomes visually dimmed, aria-pressed=false",
+          "observed": "aria-pressed changed to false, boxShadow changed to 'none', color dimmed to rgba(240,144,58,0.314), borderColor dimmed to rgba(240,144,58,0.19)"
+        },
+        {
+          "action": "Click Clubs filter button to toggle off independently",
+          "expected": "Clubs dimmed while Bars already dimmed, other 4 still active",
+          "observed": "Clubs aria-pressed=false, hasGlow=false. Bars still false. Stores/Coffee/Restaurants/Other still true with glow"
+        },
+        {
+          "action": "Click Bars filter button to toggle back on",
+          "expected": "Bars re-activates with glow styling",
+          "observed": "aria-pressed=true, boxShadow restored with neon glow, full color restored"
+        },
+        {
+          "action": "Verify active vs inactive visual distinction",
+          "expected": "Active: full color, glow box-shadow, text-shadow. Inactive: dimmed color, no glow",
+          "observed": "Active (Stores): borderColor=rgb(246,226,1), boxShadow=multi-layer glow, textShadow=neon glow. Inactive (Bars when off): borderColor=rgba(240,144,58,0.19), boxShadow=none, textShadow=none, backgroundColor=rgba(29,29,58,0.6)"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["filters-initial.png", "filters-bars-off.png", "filters-all-active.png"],
+        "consoleErrors": "WebGL context creation error (expected in headless Chrome, not a code bug)",
+        "network": "N/A - DOM-based verification",
+        "domChecks": "aria-pressed attribute toggles correctly, inline styles change between active/inactive states (boxShadow, textShadow, borderColor, backgroundColor, color)"
+      },
+      "issues": "Markers cannot be verified visually because MapLibre WebGL fails in headless Chrome. However, React state management is verified via DOM (aria-pressed, visiblePlaces filtered by activeCategories set). The code in map-view.tsx correctly filters places by activeCategories and passes visiblePlaces to PlaceMarkers."
+    },
+    {
+      "id": "VAL-PLACE-007",
+      "title": "Search bar filters places by name",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Type 'SEY' in search input",
+          "expected": "Dropdown appears with case-insensitive match on 'SEY Coffee'",
+          "observed": "Dropdown visible with 1 result: search-result-sey-coffee showing 'SEY Coffee' [COFFEE]"
+        },
+        {
+          "action": "Type 'mood' in search input (lowercase)",
+          "expected": "Case-insensitive match on 'Mood Ring'",
+          "observed": "Dropdown visible with 1 result: search-result-mood-ring"
+        },
+        {
+          "action": "Select 'SEY Coffee' from dropdown",
+          "expected": "Detail panel opens with SEY Coffee info, search input clears",
+          "observed": "Detail panel opened showing: name='SEY Coffee', description, address='18 Grattan St, Brooklyn, NY 11206', hours='Daily 8 AM–5 PM', website link. Search input cleared to empty, dropdown dismissed"
+        },
+        {
+          "action": "Verify search respects category filters (toggle bars off, search 'mood')",
+          "expected": "No results since Mood Ring is a bar and bars category is filtered out",
+          "observed": "'NO TARGETS FOUND' message displayed, 0 results in dropdown"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["filters-search-sey.png", "filters-search-selected.png"],
+        "consoleErrors": "WebGL context creation error only (expected)",
+        "network": "N/A - client-side filtering",
+        "domChecks": "search-dropdown appears with search-result-* children, search-input value updates, place-detail-panel opens with correct content"
+      },
+      "issues": "Camera fly-to animation cannot be visually verified due to WebGL limitation in headless Chrome. However, the handleSelectPlace callback in map-view.tsx calls mapRef.current.flyTo() which would execute if MapLibre were initialized."
+    },
+    {
+      "id": "VAL-PLACE-010",
+      "title": "Empty state when all categories filtered",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Toggle all 6 category filters off",
+          "expected": "All buttons inactive, empty state message appears, no markers shown",
+          "observed": "All 6 buttons have aria-pressed=false and hasGlow=false. empty-state-message element appeared in DOM"
+        },
+        {
+          "action": "Verify empty state message content and styling",
+          "expected": "Message says 'NO TARGETS IN RANGE' or similar with EVA styling",
+          "observed": "Main text: 'NO TARGETS IN RANGE' in NERV Orange (rgb(240,144,58)). Sub-text: 'ENABLE CATEGORY FILTERS TO DISPLAY'. Element has pointer-events:none, clip-path polygon corners, backdrop-blur"
+        },
+        {
+          "action": "Toggle categories back on",
+          "expected": "Empty state message disappears",
+          "observed": "empty-state-message removed from DOM, all filters active again"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["filters-all-off-empty-state.png"],
+        "consoleErrors": "WebGL context creation error only (expected)",
+        "network": "N/A",
+        "domChecks": "data-testid='empty-state-message' present when allFiltered=true, removed when any category active"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLACE-011",
+      "title": "Search no results state",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Type 'xyznonexistent' in search input",
+          "expected": "Dropdown shows 'no results' message, no matching results",
+          "observed": "Dropdown visible with search-no-results element showing 'NO TARGETS FOUND'. Zero search-result-* elements."
+        },
+        {
+          "action": "Verify no-results message styling",
+          "expected": "EVA-styled message in dropdown",
+          "observed": "Text is uppercase, mono font, tracking-widest, nerv-green/50 color (dimmed green)"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["filters-search-no-results.png"],
+        "consoleErrors": "WebGL context creation error only (expected)",
+        "network": "N/A",
+        "domChecks": "data-testid='search-no-results' present with text 'NO TARGETS FOUND', resultCount=0"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLACE-012",
+      "title": "Search clear restores markers",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "With 'xyznonexistent' in search, click X clear button",
+          "expected": "Search input clears, dropdown closes, markers restored to match category filters",
+          "observed": "Input value='', dropdown removed from DOM, clear button hidden, all category filters still active (aria-pressed=true), no empty state message"
+        },
+        {
+          "action": "Verify clear button presence/absence",
+          "expected": "Clear button (✕) only visible when search has text",
+          "observed": "search-clear button present when input has text, absent (not in DOM) when input is empty"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["filters-search-cleared.png"],
+        "consoleErrors": "WebGL context creation error only (expected)",
+        "network": "N/A",
+        "domChecks": "search-input value='', search-dropdown not in DOM, search-clear not in DOM, all filter buttons aria-pressed=true, empty-state-message not in DOM"
+      },
+      "issues": "Marker restoration cannot be visually confirmed due to WebGL limitation. However, the code logic is verified: clearing search does not change activeCategories state, so visiblePlaces remains all 21 places (filtered by the unchanged activeCategories set). The SearchBar's handleClear resets query to '' and closes dropdown without affecting category state."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "agent-browser click command timed out on filter buttons (15s timeout). Had to use JavaScript eval (element.click()) instead of agent-browser click @ref for all button interactions.",
+      "resolved": true,
+      "resolution": "Used agent-browser eval with document.querySelector().click() for all click interactions",
+      "affectedAssertions": ["VAL-PLACE-006", "VAL-PLACE-010", "VAL-PLACE-011", "VAL-PLACE-012"]
+    },
+    {
+      "description": "MapLibre WebGL fails to initialize in headless Chrome (SwiftShader), preventing marker rendering. All marker visibility assertions rely on code analysis + DOM state (aria-pressed, React state) rather than visual verification.",
+      "resolved": true,
+      "resolution": "Used DOM inspection (aria-pressed, computed styles, data-testid presence) as primary evidence per AGENTS.md guidance for WebGL-unavailable environments",
+      "affectedAssertions": ["VAL-PLACE-006", "VAL-PLACE-007", "VAL-PLACE-012"]
+    }
+  ],
+  "blockers": [],
+  "summary": "Tested 5 assertions: all 5 passed. Category filters correctly toggle between active (glowing) and inactive (dimmed) states with proper aria-pressed attributes. Search performs case-insensitive matching, shows dropdown with results, and selecting a result opens the detail panel. Empty state ('NO TARGETS IN RANGE') appears when all categories are filtered out. 'NO TARGETS FOUND' message appears for non-matching searches. Search clear restores original state. WebGL markers could not be visually verified (headless Chrome limitation) but all React state management and DOM behavior is correct."
+}
