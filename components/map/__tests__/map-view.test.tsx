@@ -29,8 +29,8 @@ vi.mock("react-map-gl/maplibre", () => ({
   Source: vi.fn(({ children, id }: Record<string, unknown>) => (
     <div data-testid={`source-${id}`}>{children as React.ReactNode}</div>
   )),
-  Layer: vi.fn(({ id }: Record<string, unknown>) => (
-    <div data-testid={`layer-${id}`} />
+  Layer: vi.fn(({ id, beforeId }: Record<string, unknown>) => (
+    <div data-testid={`layer-${id}`} data-before-id={beforeId ?? ""} />
   )),
   Marker: vi.fn(({ children, longitude, latitude }: Record<string, unknown>) => (
     <div data-testid={`marker-${longitude}-${latitude}`}>{children as React.ReactNode}</div>
@@ -157,5 +157,12 @@ describe("MapView component", () => {
   it("renders the search bar", () => {
     render(<MapView />);
     expect(screen.getByTestId("search-input")).toBeInTheDocument();
+  });
+
+  it("positions fade layers below text labels via beforeId", () => {
+    render(<MapView />);
+    const fadeLayer = screen.getByTestId("layer-boundary-fade-ring-1");
+    expect(fadeLayer).toBeInTheDocument();
+    expect(fadeLayer.dataset.beforeId).toBe("water_name_point_label");
   });
 });

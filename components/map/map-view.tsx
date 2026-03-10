@@ -36,6 +36,7 @@ const ALL_CATEGORIES: PlaceCategory[] = [
 
 export default function MapView({ onMove }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
+  const zoomRef = useRef<number>(DEFAULT_VIEW_STATE.zoom);
   const [viewState, setViewState] = useState<{
     latitude: number;
     longitude: number;
@@ -81,6 +82,7 @@ export default function MapView({ onMove }: MapViewProps) {
   const handleMove = useCallback(
     (evt: { viewState: { latitude: number; longitude: number; zoom: number; pitch: number; bearing: number } }) => {
       setViewState(evt.viewState);
+      zoomRef.current = evt.viewState.zoom;
       onMove?.({
         latitude: evt.viewState.latitude,
         longitude: evt.viewState.longitude,
@@ -93,14 +95,14 @@ export default function MapView({ onMove }: MapViewProps) {
   const handleSelectPlace = useCallback((place: Place) => {
     setSelectedPlace(place);
 
-    // Fly camera to selected marker
+    // Fly camera to selected marker — read zoom from ref to keep callback stable
     mapRef.current?.flyTo({
       center: [place.lng, place.lat],
-      zoom: Math.max(viewState.zoom, 16),
+      zoom: Math.max(zoomRef.current, 16),
       duration: 1200,
       essential: true,
     });
-  }, [viewState.zoom]);
+  }, []);
 
   const handleClosePanel = useCallback(() => {
     setSelectedPlace(null);
@@ -147,7 +149,9 @@ export default function MapView({ onMove }: MapViewProps) {
       >
         <NavigationControl position="bottom-right" showCompass={false} />
 
-        {/* Boundary fade overlay — dark vignette outside Bushwick area */}
+        {/* Boundary fade overlay — dark vignette outside Bushwick area
+             beforeId positions fade layers below the first label/text layer
+             so labels remain readable in the fade zone */}
         <Source id="boundary-fade" type="geojson" data={fadeGeoJSON}>
           {fadeLayers.map((layer) => (
             <Layer
@@ -157,6 +161,7 @@ export default function MapView({ onMove }: MapViewProps) {
               source="boundary-fade"
               paint={layer.paint as FillLayerSpecification["paint"]}
               filter={layer.filter as FilterSpecification}
+              beforeId="water_name_point_label"
             />
           ))}
         </Source>

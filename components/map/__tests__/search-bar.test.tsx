@@ -168,4 +168,159 @@ describe("SearchBar", () => {
     // At minimum, "Starr Bar" should be there
     expect(screen.getByTestId("search-result-starr-bar")).toBeInTheDocument();
   });
+
+  describe("arrow-key keyboard navigation", () => {
+    it("ArrowDown highlights the first result", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      const result = screen.getByTestId("search-result-sey-coffee");
+      expect(result).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("ArrowDown wraps from last to first result", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      // Search for something with exactly one result
+      fireEvent.change(input, { target: { value: "sey" } });
+      // Press down once to highlight index 0, then again to wrap to 0
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      // With only one result, wrapping back to 0
+      const result = screen.getByTestId("search-result-sey-coffee");
+      expect(result).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("ArrowUp from first result wraps to last result", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      // First go down to select index 0
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      // Then up should wrap to last (which is also 0 for single result)
+      fireEvent.keyDown(input, { key: "ArrowUp" });
+      const result = screen.getByTestId("search-result-sey-coffee");
+      expect(result).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("Enter selects the highlighted result", () => {
+      const handleSelect = vi.fn();
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={handleSelect}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      fireEvent.keyDown(input, { key: "Enter" });
+      expect(handleSelect).toHaveBeenCalledTimes(1);
+      expect(handleSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "sey-coffee" })
+      );
+    });
+
+    it("Enter does nothing when no result is highlighted", () => {
+      const handleSelect = vi.fn();
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={handleSelect}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      // Press Enter without pressing ArrowDown first
+      fireEvent.keyDown(input, { key: "Enter" });
+      expect(handleSelect).not.toHaveBeenCalled();
+    });
+
+    it("Escape closes the dropdown and resets highlight", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      expect(screen.getByTestId("search-dropdown")).toBeInTheDocument();
+      fireEvent.keyDown(input, { key: "Escape" });
+      expect(screen.queryByTestId("search-dropdown")).not.toBeInTheDocument();
+    });
+
+    it("typing resets the highlighted index", () => {
+      const handleSelect = vi.fn();
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={handleSelect}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      // Now type more, which should reset highlight
+      fireEvent.change(input, { target: { value: "sey c" } });
+      // Enter should do nothing since highlight was reset
+      fireEvent.keyDown(input, { key: "Enter" });
+      expect(handleSelect).not.toHaveBeenCalled();
+    });
+
+    it("search input has combobox role and aria attributes", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      expect(input).toHaveAttribute("role", "combobox");
+      expect(input).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.change(input, { target: { value: "sey" } });
+      expect(input).toHaveAttribute("aria-expanded", "true");
+    });
+
+    it("dropdown has listbox role and results have option role", () => {
+      render(
+        <SearchBar
+          places={places}
+          activeCategories={new Set(ALL_CATEGORIES)}
+          onSelectPlace={vi.fn()}
+        />
+      );
+      const input = screen.getByTestId("search-input");
+      fireEvent.change(input, { target: { value: "sey" } });
+      const dropdown = screen.getByTestId("search-dropdown");
+      expect(dropdown).toHaveAttribute("role", "listbox");
+      const result = screen.getByTestId("search-result-sey-coffee");
+      expect(result).toHaveAttribute("role", "option");
+    });
+  });
 });

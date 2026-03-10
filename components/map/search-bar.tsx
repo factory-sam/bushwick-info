@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { CATEGORIES, type Place, type PlaceCategory } from "@/data/places";
 
 export interface SearchBarProps {
@@ -23,21 +23,26 @@ export function SearchBar({
 }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const filteredResults =
-    query.trim().length > 0
-      ? places.filter(
-          (place) =>
-            activeCategories.has(place.category) &&
-            place.name.toLowerCase().includes(query.toLowerCase())
-        )
-      : [];
+  const filteredResults = useMemo(
+    () =>
+      query.trim().length > 0
+        ? places.filter(
+            (place) =>
+              activeCategories.has(place.category) &&
+              place.name.toLowerCase().includes(query.toLowerCase())
+          )
+        : [],
+    [query, places, activeCategories]
+  );
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.target.value);
       setIsOpen(true);
+      setHighlightedIndex(-1);
     },
     []
   );
@@ -45,15 +50,50 @@ export function SearchBar({
   const handleClear = useCallback(() => {
     setQuery("");
     setIsOpen(false);
+    setHighlightedIndex(-1);
   }, []);
 
   const handleSelectResult = useCallback(
     (place: Place) => {
       setQuery("");
       setIsOpen(false);
+      setHighlightedIndex(-1);
       onSelectPlace(place);
     },
     [onSelectPlace]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (!isOpen || filteredResults.length === 0) return;
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setHighlightedIndex((prev) =>
+            prev < filteredResults.length - 1 ? prev + 1 : 0
+          );
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setHighlightedIndex((prev) =>
+            prev > 0 ? prev - 1 : filteredResults.length - 1
+          );
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && highlightedIndex < filteredResults.length) {
+            handleSelectResult(filteredResults[highlightedIndex]!);
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          setIsOpen(false);
+          setHighlightedIndex(-1);
+          break;
+      }
+    },
+    [isOpen, filteredResults, highlightedIndex, handleSelectResult]
   );
 
   // Close dropdown when clicking outside
@@ -84,9 +124,18 @@ export function SearchBar({
           type="text"
           value={query}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={() => query.trim().length > 0 && setIsOpen(true)}
           placeholder="SEARCH TARGETS..."
           data-testid="search-input"
+          role="combobox"
+          aria-controls="search-listbox"
+          aria-expanded={showDropdown}
+          aria-activedescendant={
+            highlightedIndex >= 0 && filteredResults[highlightedIndex]
+              ? `search-option-${filteredResults[highlightedIndex]!.id}`
+              : undefined
+          }
           className="w-full border bg-nerv-black/60 px-3 py-2 font-mono text-sm tracking-wider text-nerv-green placeholder-nerv-green/30 outline-none backdrop-blur-sm transition-colors focus:border-nerv-green"
           style={{
             borderColor: "rgba(88, 242, 165, 0.4)",
@@ -112,6 +161,8 @@ export function SearchBar({
         <div
           className="absolute left-0 right-0 top-full z-50 mt-1 max-h-64 overflow-y-auto border border-nerv-green/30 bg-nerv-deep-purple/95 backdrop-blur-md"
           data-testid="search-dropdown"
+          id="search-listbox"
+          role="listbox"
           style={{
             clipPath:
               "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))",
@@ -120,14 +171,20 @@ export function SearchBar({
           }}
         >
           {filteredResults.length > 0 ? (
-            filteredResults.map((place) => {
+            filteredResults.map((place, index) => {
               const categoryInfo = CATEGORIES[place.category];
+              const isHighlighted = index === highlightedIndex;
               return (
                 <button
                   key={place.id}
+                  id={`search-option-${place.id}`}
                   onClick={() => handleSelectResult(place)}
                   data-testid={`search-result-${place.id}`}
-                  className="flex w-full items-center gap-2 border-b border-nerv-green/10 px-3 py-2 text-left transition-colors hover:bg-nerv-green/10"
+                  role="option"
+                  aria-selected={isHighlighted}
+                  className={`flex w-full items-center gap-2 border-b border-nerv-green/10 px-3 py-2 text-left transition-colors hover:bg-nerv-green/10 ${
+                    isHighlighted ? "bg-nerv-green/15" : ""
+                  }`}
                 >
                   {/* Category color dot */}
                   <span
