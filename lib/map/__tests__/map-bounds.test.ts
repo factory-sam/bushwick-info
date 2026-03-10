@@ -88,6 +88,60 @@ describe("createBoundaryFadeGeoJSON", () => {
   });
 });
 
+describe("createBoundaryFadeGeoJSON ring geometry expands outward", () => {
+  it("each ring band outer bounds expand beyond inner bounds in all directions", () => {
+    const geojson = createBoundaryFadeGeoJSON();
+
+    // For each ring feature (except the outermost catch-all), verify
+    // the outer rectangle is strictly larger than the inner rectangle.
+    // Each polygon has coordinates[0] = outer ring, coordinates[1] = inner hole.
+    for (const feature of geojson.features) {
+      const [outerCoords, innerCoords] = feature.geometry.coordinates;
+
+      // Extract bounding box from coordinate arrays
+      // Outer ring coords: [west,south], [east,south], [east,north], [west,north], [west,south]
+      const outerWest = outerCoords![0]![0]!;
+      const outerSouth = outerCoords![0]![1]!;
+      const outerEast = outerCoords![1]![0]!;
+      const outerNorth = outerCoords![2]![1]!;
+
+      // Inner ring coords: [west,south], [west,north], [east,north], [east,south], [west,south]
+      const innerWest = innerCoords![0]![0]!;
+      const innerSouth = innerCoords![0]![1]!;
+      const innerEast = innerCoords![2]![0]!;
+      const innerNorth = innerCoords![1]![1]!;
+
+      // Outer east must be greater than inner east (expanding eastward)
+      expect(outerEast).toBeGreaterThan(innerEast);
+      // Outer west must be less than inner west (expanding westward)
+      expect(outerWest).toBeLessThan(innerWest);
+      // Outer north must be greater than inner north (expanding northward)
+      expect(outerNorth).toBeGreaterThan(innerNorth);
+      // Outer south must be less than inner south (expanding southward)
+      expect(outerSouth).toBeLessThan(innerSouth);
+    }
+  });
+
+  it("fade rings expand concentrically (each ring wider than the previous)", () => {
+    const geojson = createBoundaryFadeGeoJSON();
+    const features = geojson.features;
+
+    for (let i = 1; i < features.length; i++) {
+      const prevOuter = features[i - 1]!.geometry.coordinates[0]!;
+      const currOuter = features[i]!.geometry.coordinates[0]!;
+
+      // Current outer east >= previous outer east
+      expect(currOuter[1]![0]!).toBeGreaterThanOrEqual(prevOuter[1]![0]!);
+      // Current outer west <= previous outer west
+      expect(currOuter[0]![0]!).toBeLessThanOrEqual(prevOuter[0]![0]!);
+      // Current outer north >= previous outer north
+      expect(currOuter[2]![1]!).toBeGreaterThanOrEqual(prevOuter[2]![1]!);
+      // Current outer south <= previous outer south
+      expect(currOuter[0]![1]!).toBeLessThanOrEqual(prevOuter[0]![1]!);
+    }
+  });
+});
+
 describe("FADE_RINGS", () => {
   it("defines ring configurations for graduated fade", () => {
     expect(Array.isArray(FADE_RINGS)).toBe(true);

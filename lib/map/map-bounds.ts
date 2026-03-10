@@ -95,15 +95,15 @@ export function createBoundaryFadeGeoJSON(): FadeFeatureCollection {
     const outerBounds = {
       north: FADE_AREA.north + outerRing.offset,
       south: FADE_AREA.south - outerRing.offset,
-      east: FADE_AREA.east - outerRing.offset,   // East is negative, subtract to go east
-      west: FADE_AREA.west + outerRing.offset,    // West is negative, add to go west
+      east: FADE_AREA.east + outerRing.offset,   // Add to expand east (longitude increases eastward)
+      west: FADE_AREA.west - outerRing.offset,    // Subtract to expand west (longitude decreases westward)
     };
 
     const innerBounds = {
       north: FADE_AREA.north + innerRing.offset,
       south: FADE_AREA.south - innerRing.offset,
-      east: FADE_AREA.east - innerRing.offset,
-      west: FADE_AREA.west + innerRing.offset,
+      east: FADE_AREA.east + innerRing.offset,
+      west: FADE_AREA.west - innerRing.offset,
     };
 
     features.push({
@@ -130,14 +130,14 @@ export function createBoundaryFadeGeoJSON(): FadeFeatureCollection {
         {
           north: FADE_AREA.north + outerEdge,
           south: FADE_AREA.south - outerEdge,
-          east: FADE_AREA.east - outerEdge,
-          west: FADE_AREA.west + outerEdge,
+          east: FADE_AREA.east + outerEdge,
+          west: FADE_AREA.west - outerEdge,
         },
         {
           north: FADE_AREA.north + lastRing.offset,
           south: FADE_AREA.south - lastRing.offset,
-          east: FADE_AREA.east - lastRing.offset,
-          west: FADE_AREA.west + lastRing.offset,
+          east: FADE_AREA.east + lastRing.offset,
+          west: FADE_AREA.west - lastRing.offset,
         }
       ),
     },
