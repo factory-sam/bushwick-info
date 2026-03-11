@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Orbitron, Rajdhani, Share_Tech_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -42,6 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${orbitron.variable} ${shareTechMono.variable} ${rajdhani.variable} font-body antialiased bg-nerv-deep-purple text-white`}
       >
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

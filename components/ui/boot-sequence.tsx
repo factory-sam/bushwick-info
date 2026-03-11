@@ -107,7 +107,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
               BUSHWICK
             </h1>
             <p className="mt-2 font-mono text-xs tracking-wider text-nerv-green/70">
-              RECONNAISSANCE SYSTEM v1.0
+              NEIGHBORHOOD DISCOVERY ENGINE
             </p>
           </motion.div>
 
