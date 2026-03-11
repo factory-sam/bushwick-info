@@ -89,11 +89,7 @@ export function PlaceMarkers({ onSelectPlace, selectedPlaceId, visiblePlaces }: 
             >
               {/* Targeting reticle — shown on hover or lock-on */}
               {(isHovered || isLocking) && (
-                <TargetingReticle
-                  place={place}
-                  color={categoryInfo.color}
-                  isLocking={isLocking}
-                />
+                <TargetingReticle place={place} color={categoryInfo.color} isLocking={isLocking} />
               )}
 
               {/* Selected indicator ring */}

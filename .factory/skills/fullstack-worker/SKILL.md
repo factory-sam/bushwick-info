@@ -10,6 +10,7 @@ NOTE: Startup and cleanup are handled by `worker-base`. This skill defines the W
 ## When to Use This Skill
 
 Use for features involving:
+
 - Next.js project setup and configuration
 - API routes (CRUD endpoints, auth)
 - Data layer (JSON files, data models)
@@ -66,27 +67,54 @@ Use for features involving:
   "whatWasLeftUndone": "",
   "verification": {
     "commandsRun": [
-      { "command": "pnpm test -- --grep auth", "exitCode": 0, "observation": "6 tests passing: login-success, login-wrong-pw, login-empty, session-valid, session-expired, session-invalid" },
+      {
+        "command": "pnpm test -- --grep auth",
+        "exitCode": 0,
+        "observation": "6 tests passing: login-success, login-wrong-pw, login-empty, session-valid, session-expired, session-invalid"
+      },
       { "command": "pnpm build", "exitCode": 0, "observation": "Build successful, no type errors" },
-      { "command": "curl -X POST http://localhost:3100/api/auth/login -H 'Content-Type: application/json' -d '{\"password\":\"bushwick-admin-2024\"}'", "exitCode": 0, "observation": "200 OK, Set-Cookie header present with httpOnly flag" },
-      { "command": "curl -X POST http://localhost:3100/api/auth/login -H 'Content-Type: application/json' -d '{\"password\":\"wrong\"}'", "exitCode": 0, "observation": "401 Unauthorized, body: {\"error\":\"ACCESS DENIED\"}" }
+      {
+        "command": "curl -X POST http://localhost:3100/api/auth/login -H 'Content-Type: application/json' -d '{\"password\":\"bushwick-admin-2024\"}'",
+        "exitCode": 0,
+        "observation": "200 OK, Set-Cookie header present with httpOnly flag"
+      },
+      {
+        "command": "curl -X POST http://localhost:3100/api/auth/login -H 'Content-Type: application/json' -d '{\"password\":\"wrong\"}'",
+        "exitCode": 0,
+        "observation": "401 Unauthorized, body: {\"error\":\"ACCESS DENIED\"}"
+      }
     ],
     "interactiveChecks": [
-      { "action": "Navigated to http://localhost:3100/admin with agent-browser", "observed": "Redirected to /admin/login. Dark EVA-themed login form visible with Orbitron heading, password input, NERV-styled submit button" },
-      { "action": "Entered correct password and submitted", "observed": "Redirected to /admin dashboard. Session cookie set." },
-      { "action": "Entered wrong password and submitted", "observed": "Red 'ACCESS DENIED' error message with EVA alert styling. Remained on login page." }
+      {
+        "action": "Navigated to http://localhost:3100/admin with agent-browser",
+        "observed": "Redirected to /admin/login. Dark EVA-themed login form visible with Orbitron heading, password input, NERV-styled submit button"
+      },
+      {
+        "action": "Entered correct password and submitted",
+        "observed": "Redirected to /admin dashboard. Session cookie set."
+      },
+      {
+        "action": "Entered wrong password and submitted",
+        "observed": "Red 'ACCESS DENIED' error message with EVA alert styling. Remained on login page."
+      }
     ]
   },
   "tests": {
     "added": [
-      { "file": "src/__tests__/api/auth.test.ts", "cases": [
-        { "name": "returns 200 and sets cookie for correct password", "verifies": "login success flow" },
-        { "name": "returns 401 for incorrect password", "verifies": "login failure" },
-        { "name": "returns 400 for empty password", "verifies": "input validation" },
-        { "name": "returns session data for valid cookie", "verifies": "session check" },
-        { "name": "returns 401 for expired cookie", "verifies": "session expiry" },
-        { "name": "returns 401 for invalid cookie", "verifies": "session security" }
-      ]}
+      {
+        "file": "src/__tests__/api/auth.test.ts",
+        "cases": [
+          {
+            "name": "returns 200 and sets cookie for correct password",
+            "verifies": "login success flow"
+          },
+          { "name": "returns 401 for incorrect password", "verifies": "login failure" },
+          { "name": "returns 400 for empty password", "verifies": "input validation" },
+          { "name": "returns session data for valid cookie", "verifies": "session check" },
+          { "name": "returns 401 for expired cookie", "verifies": "session expiry" },
+          { "name": "returns 401 for invalid cookie", "verifies": "session security" }
+        ]
+      }
     ]
   },
   "discoveredIssues": []

@@ -10,9 +10,9 @@ export interface TargetingReticleProps {
 }
 
 /**
- * NGE-inspired targeting reticle that appears around markers.
+ * Cyberpunk targeting reticle that appears around markers.
  * On hover: animated concentric brackets with rotation.
- * On click (locking): brackets close in tightly with NERV text flash.
+ * On click (locking): brackets close in tightly with text flash.
  */
 export function TargetingReticle({ place, color, isLocking }: TargetingReticleProps) {
   const categoryInfo = CATEGORIES[place.category];
@@ -92,7 +92,7 @@ export function TargetingReticle({ place, color, isLocking }: TargetingReticlePr
         />
       </svg>
 
-      {/* NERV-style data readout text — place name and category */}
+      {/* Data readout text — place name and category */}
       <div
         className="reticle-data-text absolute font-mono"
         style={{
@@ -108,16 +108,12 @@ export function TargetingReticle({ place, color, isLocking }: TargetingReticlePr
         }}
       >
         <div className="uppercase">{place.name}</div>
-        <div style={{ opacity: 0.7, fontSize: "9px" }}>
-          [{categoryInfo.name.toUpperCase()}]
-        </div>
+        <div style={{ opacity: 0.7, fontSize: "9px" }}>[{categoryInfo.name.toUpperCase()}]</div>
       </div>
 
       {/* Lock-on flash text — "TARGET ACQUIRED" */}
       {isLocking && (
-        <div
-          className="lock-on-flash absolute inset-0 flex items-center justify-center"
-        >
+        <div className="lock-on-flash absolute inset-0 flex items-center justify-center">
           <div
             className="font-mono text-xs font-bold uppercase tracking-widest"
             style={{

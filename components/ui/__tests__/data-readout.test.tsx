@@ -40,7 +40,7 @@ describe("DataReadout", () => {
     const { rerender } = render(<DataReadout {...defaultProps} />);
     expect(screen.getByText(/40\.6944/)).toBeInTheDocument();
 
-    rerender(<DataReadout latitude={40.7000} longitude={-73.9300} zoom={16} />);
+    rerender(<DataReadout latitude={40.7} longitude={-73.93} zoom={16} />);
     expect(screen.getByText(/40\.7000/)).toBeInTheDocument();
     expect(screen.getByText(/-73\.9300/)).toBeInTheDocument();
     expect(screen.getByText(/16\.00/)).toBeInTheDocument();

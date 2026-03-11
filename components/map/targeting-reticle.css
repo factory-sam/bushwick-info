@@ -1,4 +1,4 @@
-/* NGE Targeting Reticle Animations */
+/* Targeting Reticle Animations */
 
 @keyframes reticle-spin {
   from {
@@ -19,7 +19,8 @@
 }
 
 @keyframes reticle-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.7;
   }
   50% {
@@ -78,14 +79,17 @@
 }
 
 @keyframes marker-pulse {
-  0%, 100% {
-    box-shadow: 0 0 4px var(--marker-color),
-                0 0 8px var(--marker-color);
+  0%,
+  100% {
+    box-shadow:
+      0 0 4px var(--marker-color),
+      0 0 8px var(--marker-color);
   }
   50% {
-    box-shadow: 0 0 8px var(--marker-color),
-                0 0 16px var(--marker-color),
-                0 0 24px var(--marker-color);
+    box-shadow:
+      0 0 8px var(--marker-color),
+      0 0 16px var(--marker-color),
+      0 0 24px var(--marker-color);
   }
 }
 
@@ -94,7 +98,9 @@
 }
 
 .reticle-ring-outer {
-  animation: reticle-spin 8s linear infinite, reticle-pulse 2s ease-in-out infinite;
+  animation:
+    reticle-spin 8s linear infinite,
+    reticle-pulse 2s ease-in-out infinite;
 }
 
 .reticle-ring-inner {

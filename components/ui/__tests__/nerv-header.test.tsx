@@ -5,13 +5,12 @@ import { NervHeader } from "../nerv-header";
 // Mock motion to render as regular HTML elements
 vi.mock("motion/react", () => ({
   motion: {
-    header: ({
-      children,
-      className,
-      style,
-      "data-testid": testId,
-    }: Record<string, unknown>) => (
-      <header className={className as string} style={style as React.CSSProperties} data-testid={testId as string}>
+    header: ({ children, className, style, "data-testid": testId }: Record<string, unknown>) => (
+      <header
+        className={className as string}
+        style={style as React.CSSProperties}
+        data-testid={testId as string}
+      >
         {children as React.ReactNode}
       </header>
     ),

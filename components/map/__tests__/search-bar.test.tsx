@@ -76,9 +76,7 @@ describe("SearchBar", () => {
     const input = screen.getByTestId("search-input");
     fireEvent.change(input, { target: { value: "zzznonexistent" } });
     expect(screen.getByTestId("search-no-results")).toBeInTheDocument();
-    expect(screen.getByTestId("search-no-results")).toHaveTextContent(
-      "NO TARGETS FOUND"
-    );
+    expect(screen.getByTestId("search-no-results")).toHaveTextContent("NO TARGETS FOUND");
   });
 
   it("scopes search results to active categories only", () => {
@@ -110,9 +108,7 @@ describe("SearchBar", () => {
     fireEvent.change(input, { target: { value: "sey" } });
     fireEvent.click(screen.getByTestId("search-result-sey-coffee"));
     expect(handleSelect).toHaveBeenCalledTimes(1);
-    expect(handleSelect).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "sey-coffee" })
-    );
+    expect(handleSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "sey-coffee" }));
   });
 
   it("clears input and closes dropdown when result is selected", () => {
@@ -236,9 +232,7 @@ describe("SearchBar", () => {
       fireEvent.keyDown(input, { key: "ArrowDown" });
       fireEvent.keyDown(input, { key: "Enter" });
       expect(handleSelect).toHaveBeenCalledTimes(1);
-      expect(handleSelect).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "sey-coffee" })
-      );
+      expect(handleSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "sey-coffee" }));
     });
 
     it("Enter does nothing when no result is highlighted", () => {

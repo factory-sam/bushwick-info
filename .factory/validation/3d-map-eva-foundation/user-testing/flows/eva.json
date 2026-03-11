@@ -21,9 +21,21 @@
         }
       },
       "steps": [
-        { "action": "Navigate to http://localhost:3100", "expected": "Page loads with scanline overlay", "observed": "Scanline overlay visible as horizontal lines across viewport" },
-        { "action": "Check pointer-events CSS on .scanlines", "expected": "pointer-events: none", "observed": "pointer-events: none confirmed on element and ::after pseudo-element" },
-        { "action": "Verify repeating-linear-gradient background", "expected": "Horizontal scanline pattern", "observed": "repeating-linear-gradient with 1px dark lines every 2px" }
+        {
+          "action": "Navigate to http://localhost:3100",
+          "expected": "Page loads with scanline overlay",
+          "observed": "Scanline overlay visible as horizontal lines across viewport"
+        },
+        {
+          "action": "Check pointer-events CSS on .scanlines",
+          "expected": "pointer-events: none",
+          "observed": "pointer-events: none confirmed on element and ::after pseudo-element"
+        },
+        {
+          "action": "Verify repeating-linear-gradient background",
+          "expected": "Horizontal scanline pattern",
+          "observed": "repeating-linear-gradient with 1px dark lines every 2px"
+        }
       ],
       "issues": null
     },
@@ -39,10 +51,26 @@
         }
       },
       "steps": [
-        { "action": "Check .crt-vignette element exists", "expected": "Vignette overlay present", "observed": "Element found with class 'crt-vignette pointer-events-none fixed inset-0 z-10'" },
-        { "action": "Verify radial-gradient on ::after", "expected": "Radial gradient darkening edges", "observed": "radial-gradient from transparent 60% to rgba(0,0,83,0.6) 100% — Terminal Black (#000053) at edges" },
-        { "action": "Verify pointer-events: none", "expected": "Does not block pointer events", "observed": "pointer-events: none confirmed" },
-        { "action": "Visual inspection of screenshot", "expected": "Darkened edges, clear center", "observed": "Screenshot shows subtle darkening at edges, center remains fully visible" }
+        {
+          "action": "Check .crt-vignette element exists",
+          "expected": "Vignette overlay present",
+          "observed": "Element found with class 'crt-vignette pointer-events-none fixed inset-0 z-10'"
+        },
+        {
+          "action": "Verify radial-gradient on ::after",
+          "expected": "Radial gradient darkening edges",
+          "observed": "radial-gradient from transparent 60% to rgba(0,0,83,0.6) 100% — Terminal Black (#000053) at edges"
+        },
+        {
+          "action": "Verify pointer-events: none",
+          "expected": "Does not block pointer events",
+          "observed": "pointer-events: none confirmed"
+        },
+        {
+          "action": "Visual inspection of screenshot",
+          "expected": "Darkened edges, clear center",
+          "observed": "Screenshot shows subtle darkening at edges, center remains fully visible"
+        }
       ],
       "issues": null
     },
@@ -62,11 +90,31 @@
         }
       },
       "steps": [
-        { "action": "Check header panel exists with data-testid", "expected": "NERV header panel present", "observed": "Found [data-testid='nerv-header'] with h1 text 'BUSHWICK // MAP'" },
-        { "action": "Verify clip-path polygon (angled corners)", "expected": "Non-standard clipped corners", "observed": "clip-path polygon with 16px corner cuts confirmed — not border-radius" },
-        { "action": "Verify neon border glow", "expected": "box-shadow in NERV Orange", "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A NERV Orange, including inset glow" },
-        { "action": "Verify Orbitron font on title", "expected": "font-family: Orbitron", "observed": "Computed fontFamily: Orbitron, \"Orbitron Fallback\"" },
-        { "action": "Verify dark semi-transparent background", "expected": "Deep Purple with transparency", "observed": "bg-nerv-deep-purple/80 — 80% opacity deep purple" }
+        {
+          "action": "Check header panel exists with data-testid",
+          "expected": "NERV header panel present",
+          "observed": "Found [data-testid='nerv-header'] with h1 text 'BUSHWICK // MAP'"
+        },
+        {
+          "action": "Verify clip-path polygon (angled corners)",
+          "expected": "Non-standard clipped corners",
+          "observed": "clip-path polygon with 16px corner cuts confirmed — not border-radius"
+        },
+        {
+          "action": "Verify neon border glow",
+          "expected": "box-shadow in NERV Orange",
+          "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A NERV Orange, including inset glow"
+        },
+        {
+          "action": "Verify Orbitron font on title",
+          "expected": "font-family: Orbitron",
+          "observed": "Computed fontFamily: Orbitron, \"Orbitron Fallback\""
+        },
+        {
+          "action": "Verify dark semi-transparent background",
+          "expected": "Deep Purple with transparency",
+          "observed": "bg-nerv-deep-purple/80 — 80% opacity deep purple"
+        }
       ],
       "issues": null
     },
@@ -85,11 +133,31 @@
         "codeVerification": "MapView component uses onMove callback that fires continuously during pan/zoom (react-map-gl's onMove event). DataReadout receives lat/lng/zoom as props from parent state updated via onMove."
       },
       "steps": [
-        { "action": "Check data readout panel exists", "expected": "Panel with lat/lng/zoom values", "observed": "Found panel showing LAT 40.6944, LNG -73.9213, ZOOM 15.00" },
-        { "action": "Verify Share Tech Mono font", "expected": "font-family: Share Tech Mono", "observed": "Computed fontFamily: \"Share Tech Mono\", \"Share Tech Mono Fallback\"" },
-        { "action": "Verify Entry Plug Green text color", "expected": "color: #58F2A5", "observed": "rgb(88, 242, 165) confirmed = #58F2A5" },
-        { "action": "Verify continuous update wiring (code review)", "expected": "onMove fires during pan/zoom, not only on release", "observed": "MapView uses react-map-gl onMove event which fires continuously during interaction. Values passed as props to DataReadout." },
-        { "action": "Attempt live update verification via map drag", "expected": "Values change after panning", "observed": "Could not verify live updates in headless Chrome — map drag requires WebGL which is unavailable. Code structure confirms continuous updates are wired correctly." }
+        {
+          "action": "Check data readout panel exists",
+          "expected": "Panel with lat/lng/zoom values",
+          "observed": "Found panel showing LAT 40.6944, LNG -73.9213, ZOOM 15.00"
+        },
+        {
+          "action": "Verify Share Tech Mono font",
+          "expected": "font-family: Share Tech Mono",
+          "observed": "Computed fontFamily: \"Share Tech Mono\", \"Share Tech Mono Fallback\""
+        },
+        {
+          "action": "Verify Entry Plug Green text color",
+          "expected": "color: #58F2A5",
+          "observed": "rgb(88, 242, 165) confirmed = #58F2A5"
+        },
+        {
+          "action": "Verify continuous update wiring (code review)",
+          "expected": "onMove fires during pan/zoom, not only on release",
+          "observed": "MapView uses react-map-gl onMove event which fires continuously during interaction. Values passed as props to DataReadout."
+        },
+        {
+          "action": "Attempt live update verification via map drag",
+          "expected": "Values change after panning",
+          "observed": "Could not verify live updates in headless Chrome — map drag requires WebGL which is unavailable. Code structure confirms continuous updates are wired correctly."
+        }
       ],
       "issues": "Live coordinate updates could not be verified interactively due to WebGL unavailability in headless Chrome (known environment limitation per AGENTS.md). Code review confirms the onMove handler fires continuously during pan/zoom and updates DataReadout props."
     },
@@ -110,10 +178,26 @@
         }
       },
       "steps": [
-        { "action": "Check Orbitron on headings", "expected": "Orbitron font on h1", "observed": "h1 computed fontFamily: Orbitron confirmed" },
-        { "action": "Check Share Tech Mono on data readouts", "expected": "Share Tech Mono on data panel", "observed": "data-readout computed fontFamily: Share Tech Mono confirmed" },
-        { "action": "Check Rajdhani on body", "expected": "Rajdhani on body text", "observed": "body computed fontFamily: Rajdhani confirmed" },
-        { "action": "Verify font loading strategy", "expected": "No persistent fallback flash", "observed": "Fonts loaded via next/font/google with display: swap — optimized loading with minimal FOIT" }
+        {
+          "action": "Check Orbitron on headings",
+          "expected": "Orbitron font on h1",
+          "observed": "h1 computed fontFamily: Orbitron confirmed"
+        },
+        {
+          "action": "Check Share Tech Mono on data readouts",
+          "expected": "Share Tech Mono on data panel",
+          "observed": "data-readout computed fontFamily: Share Tech Mono confirmed"
+        },
+        {
+          "action": "Check Rajdhani on body",
+          "expected": "Rajdhani on body text",
+          "observed": "body computed fontFamily: Rajdhani confirmed"
+        },
+        {
+          "action": "Verify font loading strategy",
+          "expected": "No persistent fallback flash",
+          "observed": "Fonts loaded via next/font/google with display: swap — optimized loading with minimal FOIT"
+        }
       ],
       "issues": null
     },
@@ -127,9 +211,21 @@
         }
       },
       "steps": [
-        { "action": "Check header panel box-shadow", "expected": "Neon glow in NERV Orange", "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A with outer and inset glow" },
-        { "action": "Check readout panel box-shadow", "expected": "Neon glow in Entry Plug Green", "observed": "Triple box-shadow in rgba(88,242,165) = #58F2A5 with outer and inset glow" },
-        { "action": "Visual inspection", "expected": "Glows visible against dark background", "observed": "Screenshot shows visible orange glow on header, green glow on readout panel against deep purple background" }
+        {
+          "action": "Check header panel box-shadow",
+          "expected": "Neon glow in NERV Orange",
+          "observed": "Triple box-shadow in rgb(240,144,58) = #F0903A with outer and inset glow"
+        },
+        {
+          "action": "Check readout panel box-shadow",
+          "expected": "Neon glow in Entry Plug Green",
+          "observed": "Triple box-shadow in rgba(88,242,165) = #58F2A5 with outer and inset glow"
+        },
+        {
+          "action": "Visual inspection",
+          "expected": "Glows visible against dark background",
+          "observed": "Screenshot shows visible orange glow on header, green glow on readout panel against deep purple background"
+        }
       ],
       "issues": null
     },
@@ -145,11 +241,31 @@
         }
       },
       "steps": [
-        { "action": "Set viewport to 375x812", "expected": "Mobile layout applied", "observed": "Viewport set to 375x812 successfully" },
-        { "action": "Verify map fills viewport", "expected": "Map fills most of viewport", "observed": "Map container fills full viewport behind overlays" },
-        { "action": "Verify panels don't obscure map center", "expected": "Header at top, readout at bottom-left", "observed": "Header at top with left-4/right-4 positioning, readout compact at bottom-left. Map center clear." },
-        { "action": "Verify text readability", "expected": "All text readable at 375px", "observed": "Header text 'BUSHWICK // MAP' and LAT/LNG/ZOOM values all readable at mobile size" },
-        { "action": "Verify overlays pass through touch events", "expected": "pointer-events: none on overlays", "observed": "All three overlays (scanlines, vignette, hex-grid) have pointer-events: none at 375px" }
+        {
+          "action": "Set viewport to 375x812",
+          "expected": "Mobile layout applied",
+          "observed": "Viewport set to 375x812 successfully"
+        },
+        {
+          "action": "Verify map fills viewport",
+          "expected": "Map fills most of viewport",
+          "observed": "Map container fills full viewport behind overlays"
+        },
+        {
+          "action": "Verify panels don't obscure map center",
+          "expected": "Header at top, readout at bottom-left",
+          "observed": "Header at top with left-4/right-4 positioning, readout compact at bottom-left. Map center clear."
+        },
+        {
+          "action": "Verify text readability",
+          "expected": "All text readable at 375px",
+          "observed": "Header text 'BUSHWICK // MAP' and LAT/LNG/ZOOM values all readable at mobile size"
+        },
+        {
+          "action": "Verify overlays pass through touch events",
+          "expected": "pointer-events: none on overlays",
+          "observed": "All three overlays (scanlines, vignette, hex-grid) have pointer-events: none at 375px"
+        }
       ],
       "issues": null
     },
@@ -167,10 +283,26 @@
         }
       },
       "steps": [
-        { "action": "Check SVG with hex pattern exists", "expected": "SVG with hexagonal grid pattern", "observed": "SVG element found with <pattern id='hexagons'> containing hex path" },
-        { "action": "Verify Entry Plug Green stroke color", "expected": "stroke: #58F2A5", "observed": "stroke='#58F2A5' confirmed on pattern path" },
-        { "action": "Verify low opacity (5-10%)", "expected": "opacity ~5-10%", "observed": "SVG opacity: 0.06 (6%) — within specified range" },
-        { "action": "Verify pointer-events: none", "expected": "Does not block pointer events", "observed": "Parent div has pointer-events: none" }
+        {
+          "action": "Check SVG with hex pattern exists",
+          "expected": "SVG with hexagonal grid pattern",
+          "observed": "SVG element found with <pattern id='hexagons'> containing hex path"
+        },
+        {
+          "action": "Verify Entry Plug Green stroke color",
+          "expected": "stroke: #58F2A5",
+          "observed": "stroke='#58F2A5' confirmed on pattern path"
+        },
+        {
+          "action": "Verify low opacity (5-10%)",
+          "expected": "opacity ~5-10%",
+          "observed": "SVG opacity: 0.06 (6%) — within specified range"
+        },
+        {
+          "action": "Verify pointer-events: none",
+          "expected": "Does not block pointer events",
+          "observed": "Parent div has pointer-events: none"
+        }
       ],
       "issues": null
     },
@@ -194,11 +326,31 @@
         }
       },
       "steps": [
-        { "action": "Verify body background color", "expected": "Deep Purple #1D1D3A", "observed": "rgb(29, 29, 58) = #1D1D3A confirmed" },
-        { "action": "Verify NERV Orange on primary accents/borders", "expected": "#F0903A on header border, title, glow", "observed": "Header border: rgb(240,144,58), h1 color: rgb(240,144,58), box-shadow: rgb(240,144,58) — all #F0903A" },
-        { "action": "Verify Entry Plug Green on data readouts", "expected": "#58F2A5 on readout text", "observed": "Readout text color: rgb(88,242,165) = #58F2A5 confirmed" },
-        { "action": "Verify Terminal Black in vignette", "expected": "#000053 at edges", "observed": "Vignette gradient ends at rgba(0,0,83,0.6) = #000053 Terminal Black" },
-        { "action": "Check for off-theme colors", "expected": "No bright white or off-theme colors in UI chrome", "observed": "All UI chrome elements use EVA palette colors. No off-theme colors detected." }
+        {
+          "action": "Verify body background color",
+          "expected": "Deep Purple #1D1D3A",
+          "observed": "rgb(29, 29, 58) = #1D1D3A confirmed"
+        },
+        {
+          "action": "Verify NERV Orange on primary accents/borders",
+          "expected": "#F0903A on header border, title, glow",
+          "observed": "Header border: rgb(240,144,58), h1 color: rgb(240,144,58), box-shadow: rgb(240,144,58) — all #F0903A"
+        },
+        {
+          "action": "Verify Entry Plug Green on data readouts",
+          "expected": "#58F2A5 on readout text",
+          "observed": "Readout text color: rgb(88,242,165) = #58F2A5 confirmed"
+        },
+        {
+          "action": "Verify Terminal Black in vignette",
+          "expected": "#000053 at edges",
+          "observed": "Vignette gradient ends at rgba(0,0,83,0.6) = #000053 Terminal Black"
+        },
+        {
+          "action": "Check for off-theme colors",
+          "expected": "No bright white or off-theme colors in UI chrome",
+          "observed": "All UI chrome elements use EVA palette colors. No off-theme colors detected."
+        }
       ],
       "issues": null
     }

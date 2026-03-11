@@ -12,7 +12,7 @@ export interface MapLayoutProps {
 }
 
 /**
- * Composes all EVA UI chrome overlays + header + data readout
+ * Composes all UI chrome overlays + header + data readout
  * around the map view. All decorative overlays use pointer-events:none
  * so the map remains fully interactive beneath them.
  */

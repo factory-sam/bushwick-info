@@ -16,12 +16,7 @@ const ALL_CATEGORIES: PlaceCategory[] = [
 describe("CategoryFilterBar", () => {
   it("renders a button for each category", () => {
     const activeCategories = new Set(ALL_CATEGORIES);
-    render(
-      <CategoryFilterBar
-        activeCategories={activeCategories}
-        onToggleCategory={vi.fn()}
-      />
-    );
+    render(<CategoryFilterBar activeCategories={activeCategories} onToggleCategory={vi.fn()} />);
     for (const category of ALL_CATEGORIES) {
       const button = screen.getByTestId(`filter-${category}`);
       expect(button).toBeInTheDocument();
@@ -31,10 +26,7 @@ describe("CategoryFilterBar", () => {
 
   it("renders the filter bar container with role group", () => {
     render(
-      <CategoryFilterBar
-        activeCategories={new Set(ALL_CATEGORIES)}
-        onToggleCategory={vi.fn()}
-      />
+      <CategoryFilterBar activeCategories={new Set(ALL_CATEGORIES)} onToggleCategory={vi.fn()} />
     );
     const bar = screen.getByTestId("category-filter-bar");
     expect(bar).toBeInTheDocument();
@@ -43,12 +35,7 @@ describe("CategoryFilterBar", () => {
 
   it("marks active categories with aria-pressed=true", () => {
     const activeCategories = new Set<PlaceCategory>(["bars", "coffee"]);
-    render(
-      <CategoryFilterBar
-        activeCategories={activeCategories}
-        onToggleCategory={vi.fn()}
-      />
-    );
+    render(<CategoryFilterBar activeCategories={activeCategories} onToggleCategory={vi.fn()} />);
 
     expect(screen.getByTestId("filter-bars")).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByTestId("filter-coffee")).toHaveAttribute("aria-pressed", "true");
@@ -74,10 +61,7 @@ describe("CategoryFilterBar", () => {
 
   it("uses distinct colors per category from CATEGORIES", () => {
     render(
-      <CategoryFilterBar
-        activeCategories={new Set(ALL_CATEGORIES)}
-        onToggleCategory={vi.fn()}
-      />
+      <CategoryFilterBar activeCategories={new Set(ALL_CATEGORIES)} onToggleCategory={vi.fn()} />
     );
 
     // Verify each category button has a unique border color
@@ -94,10 +78,7 @@ describe("CategoryFilterBar", () => {
 
   it("renders all 6 category buttons", () => {
     render(
-      <CategoryFilterBar
-        activeCategories={new Set(ALL_CATEGORIES)}
-        onToggleCategory={vi.fn()}
-      />
+      <CategoryFilterBar activeCategories={new Set(ALL_CATEGORIES)} onToggleCategory={vi.fn()} />
     );
     const buttons = screen.getAllByRole("button");
     expect(buttons).toHaveLength(6);
@@ -105,12 +86,7 @@ describe("CategoryFilterBar", () => {
 
   it("dimmed buttons have reduced opacity color when inactive", () => {
     const activeCategories = new Set<PlaceCategory>(["bars"]);
-    render(
-      <CategoryFilterBar
-        activeCategories={activeCategories}
-        onToggleCategory={vi.fn()}
-      />
-    );
+    render(<CategoryFilterBar activeCategories={activeCategories} onToggleCategory={vi.fn()} />);
 
     const inactiveButton = screen.getByTestId("filter-stores");
     const activeButton = screen.getByTestId("filter-bars");

@@ -134,10 +134,7 @@
         }
       ],
       "evidence": {
-        "screenshots": [
-          "cross-ui-mobile-public-map.png",
-          "cross-ui-mobile-header-forced.png"
-        ],
+        "screenshots": ["cross-ui-mobile-public-map.png", "cross-ui-mobile-header-forced.png"],
         "consoleErrors": "none",
         "domChecks": {
           "viewport": "375x812",

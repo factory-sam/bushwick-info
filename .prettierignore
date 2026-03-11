@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Cache
+.turbo/
+*.tsbuildinfo
+
+# Lock files
+pnpm-lock.yaml
+
+# Auto-generated
+next-env.d.ts

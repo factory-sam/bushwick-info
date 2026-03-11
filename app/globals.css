@@ -5,14 +5,14 @@
   --font-mono: "Share Tech Mono", monospace;
   --font-body: "Rajdhani", sans-serif;
 
-  --color-nerv-orange: #F0903A;
-  --color-nerv-green: #58F2A5;
+  --color-nerv-orange: #f0903a;
+  --color-nerv-green: #58f2a5;
   --color-nerv-purple: #765898;
-  --color-nerv-deep-purple: #1D1D3A;
-  --color-nerv-red: #E81900;
-  --color-nerv-blue: #54A2D4;
+  --color-nerv-deep-purple: #1d1d3a;
+  --color-nerv-red: #e81900;
+  --color-nerv-blue: #54a2d4;
   --color-nerv-black: #000053;
-  --color-nerv-yellow: #F6E201;
+  --color-nerv-yellow: #f6e201;
 }
 
 /* CRT scanline overlay — horizontal lines via ::after pseudo-element */
@@ -36,11 +36,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 60%,
-    rgba(0, 0, 83, 0.6) 100%
-  );
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 83, 0.6) 100%);
   pointer-events: none;
 }
 

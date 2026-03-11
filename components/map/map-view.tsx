@@ -23,6 +23,7 @@ export interface MapMoveEvent {
 
 export interface MapViewProps {
   onMove?: (event: MapMoveEvent) => void;
+  initialPlaceId?: string | null;
 }
 
 const ALL_CATEGORIES: PlaceCategory[] = [
@@ -34,7 +35,7 @@ const ALL_CATEGORIES: PlaceCategory[] = [
   "other",
 ];
 
-export default function MapView({ onMove }: MapViewProps) {
+export default function MapView({ onMove, initialPlaceId }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const zoomRef = useRef<number>(DEFAULT_VIEW_STATE.zoom);
   const [viewState, setViewState] = useState<{
@@ -67,6 +68,25 @@ export default function MapView({ onMove }: MapViewProps) {
     }
   }, [activeCategories, selectedPlace]);
 
+  // Handle initial place selection from URL param (e.g., from directory)
+  useEffect(() => {
+    if (initialPlaceId) {
+      const place = places.find((p) => p.id === initialPlaceId);
+      if (place) {
+        // Small delay to ensure map is loaded
+        const timer = setTimeout(() => {
+          setSelectedPlace(place);
+          mapRef.current?.flyTo({
+            center: [place.lng, place.lat],
+            zoom: Math.max(zoomRef.current, 16),
+            duration: 1200,
+          });
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [initialPlaceId]);
+
   const mapStyle = useMemo(() => createDarkMapStyle(), []);
   const fadeGeoJSON = useMemo(() => createBoundaryFadeGeoJSON(), []);
   const fadeLayers = useMemo(() => createBoundaryFadeLayers(), []);
@@ -80,7 +100,15 @@ export default function MapView({ onMove }: MapViewProps) {
   );
 
   const handleMove = useCallback(
-    (evt: { viewState: { latitude: number; longitude: number; zoom: number; pitch: number; bearing: number } }) => {
+    (evt: {
+      viewState: {
+        latitude: number;
+        longitude: number;
+        zoom: number;
+        pitch: number;
+        bearing: number;
+      };
+    }) => {
       setViewState(evt.viewState);
       zoomRef.current = evt.viewState.zoom;
       onMove?.({
@@ -166,7 +194,7 @@ export default function MapView({ onMove }: MapViewProps) {
           ))}
         </Source>
 
-        {/* Place markers with NGE targeting reticle — only visible categories */}
+        {/* Place markers with targeting reticle — only visible categories */}
         <PlaceMarkers
           onSelectPlace={handleSelectPlace}
           selectedPlaceId={selectedPlace?.id ?? null}
@@ -174,8 +202,8 @@ export default function MapView({ onMove }: MapViewProps) {
         />
       </Map>
 
-      {/* Category filter bar and search — positioned top-right over the map */}
-      <div className="pointer-events-none absolute right-0 top-16 z-20 flex w-full flex-col gap-1.5 px-3 md:top-14 md:w-96 md:gap-2 md:px-4">
+      {/* Category filter bar and search — positioned top-right, aligned opposite header */}
+      <div className="pointer-events-none absolute right-4 top-4 z-20 flex flex-col items-end gap-1.5 md:right-6 md:top-6 md:gap-2">
         <SearchBar
           places={places}
           activeCategories={activeCategories}

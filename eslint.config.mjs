@@ -17,6 +17,31 @@ const eslintConfig = [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/naming-convention": [
+        "error",
+        // Variables: camelCase or UPPER_CASE for constants
+        {
+          selector: "variable",
+          format: ["camelCase", "UPPER_CASE", "PascalCase"],
+          leadingUnderscore: "allow",
+        },
+        // Functions: camelCase (or PascalCase for React components)
+        {
+          selector: "function",
+          format: ["camelCase", "PascalCase"],
+        },
+        // Types, interfaces, enums: PascalCase
+        {
+          selector: "typeLike",
+          format: ["PascalCase"],
+        },
+        // Parameters: camelCase with leading underscore allowed
+        {
+          selector: "parameter",
+          format: ["camelCase"],
+          leadingUnderscore: "allow",
+        },
+      ],
     },
   },
 ];

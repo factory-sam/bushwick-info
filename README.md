@@ -1,15 +1,15 @@
 # BUSHWICK // MAP
 
-An interactive 3D map of Bushwick, Brooklyn built with Next.js and MapLibre GL. The interface is themed after the NERV terminals from Neon Genesis Evangelion -- scanline overlays, CRT vignette, neon glows, targeting reticles, and a custom dark cyberpunk map style. 21 curated places across six categories are plotted on tilted 3D buildings with full search, filtering, and animated detail panels.
+An interactive 3D map of Bushwick, Brooklyn built with Next.js and MapLibre GL. The interface features a dark cyberpunk aesthetic with scanline overlays, CRT vignette, neon glows, targeting reticles, and a custom dark map style. Curated places across six categories are plotted on tilted 3D buildings with full search, filtering, and animated detail panels.
 
 <!-- Screenshot: add a screenshot or screen recording here -->
 
 ## Features
 
-- 3D extruded buildings with EVA-inspired color interpolation
-- Full NERV/EVA UI chrome: scanlines, CRT vignette, hex grid, neon glow borders
-- 21 curated Bushwick places across 6 categories (bars, coffee, restaurants, clubs, stores, other)
-- NGE-style targeting reticle on marker hover with lock-on animation on click
+- 3D extruded buildings with height-based color interpolation
+- Cyberpunk UI chrome: scanlines, CRT vignette, hex grid, neon glow borders
+- 50+ curated Bushwick places across 6 categories (bars, coffee, restaurants, clubs, stores, other)
+- Targeting reticle on marker hover with lock-on animation on click
 - Category filter toggles with neon active/dimmed states
 - Search bar with real-time filtering and keyboard navigation
 - Boundary fade rings that darken the map outside Bushwick
@@ -83,3 +83,8 @@ This is a standard Next.js application. Deploy with Vercel:
 5. Deploy
 
 The project uses OpenFreeMap tiles which require no API key, so the map works out of the box.
+
+## Documentation
+
+- [AGENTS.md](./AGENTS.md) - Instructions for autonomous agents
+- [Architecture](./docs/architecture.md) - System diagrams and design decisions

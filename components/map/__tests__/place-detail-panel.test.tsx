@@ -85,9 +85,7 @@ describe("PlaceDetailPanel", () => {
     render(<PlaceDetailPanel place={fullPlace} onClose={vi.fn()} />);
     const descriptions = screen.getAllByTestId("detail-description");
     expect(descriptions.length).toBeGreaterThanOrEqual(1);
-    expect(descriptions[0]).toHaveTextContent(
-      "A great place to visit in Bushwick."
-    );
+    expect(descriptions[0]).toHaveTextContent("A great place to visit in Bushwick.");
   });
 
   it("displays the category badge", () => {

@@ -2,7 +2,7 @@
 
 /**
  * Displayed when all category filters are toggled off.
- * NERV-styled centered message over the map.
+ * Cyberpunk-styled centered message over the map.
  */
 export function EmptyStateMessage() {
   return (
@@ -15,8 +15,7 @@ export function EmptyStateMessage() {
         style={{
           clipPath:
             "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))",
-          boxShadow:
-            "0 0 8px rgba(240, 144, 58, 0.2), 0 0 16px rgba(240, 144, 58, 0.1)",
+          boxShadow: "0 0 8px rgba(240, 144, 58, 0.2), 0 0 16px rgba(240, 144, 58, 0.1)",
         }}
       >
         <div className="font-mono text-sm uppercase tracking-widest text-nerv-orange">

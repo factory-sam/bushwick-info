@@ -10,7 +10,7 @@ export interface PlaceDetailPanelProps {
 }
 
 /**
- * EVA-styled detail panel showing selected place information.
+ * Cyberpunk-styled detail panel showing selected place information.
  * Side panel on desktop (slides from right), bottom sheet on mobile (slides up).
  * Features clip-path angled corners, neon glow border, Framer Motion slide-in.
  */
@@ -97,8 +97,7 @@ export function PlaceDetailPanel({ place, onClose }: PlaceDetailPanelProps) {
               style={{
                 boxShadow:
                   "-2px 0 10px rgba(240,144,58,0.3), -4px 0 20px rgba(240,144,58,0.15), inset 2px 0 10px rgba(240,144,58,0.1)",
-                clipPath:
-                  "polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px)",
+                clipPath: "polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px)",
               }}
             >
               {/* Top accent line */}
@@ -213,11 +212,7 @@ function DetailContent({ place }: { place: Place }) {
 
         {/* Hours — only shown when present */}
         {place.hours && (
-          <InfoField
-            label="HOURS"
-            value={place.hours}
-            color={CATEGORIES[place.category].color}
-          />
+          <InfoField label="HOURS" value={place.hours} color={CATEGORIES[place.category].color} />
         )}
 
         {/* Website — only shown when present */}
@@ -265,10 +260,7 @@ function DetailContent({ place }: { place: Place }) {
 function InfoField({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div>
-      <div
-        className="font-mono text-xs uppercase tracking-wider"
-        style={{ color: `${color}80` }}
-      >
+      <div className="font-mono text-xs uppercase tracking-wider" style={{ color: `${color}80` }}>
         {label}
       </div>
       <div className="mt-0.5 font-body text-sm text-white/90">{value}</div>

@@ -13,8 +13,8 @@
  */
 export const FADE_AREA = {
   north: 40.715,
-  south: 40.680,
-  east: -73.890,
+  south: 40.68,
+  east: -73.89,
   west: -73.945,
 } as const;
 
@@ -25,13 +25,13 @@ export const FADE_AREA = {
  * Offset is in degrees from the FADE_AREA edges.
  */
 export const FADE_RINGS: ReadonlyArray<{ offset: number; opacity: number }> = [
-  { offset: 0.0000, opacity: 0.0 },   // Inner edge (transparent)
-  { offset: 0.003, opacity: 0.15 },    // Slight darkening
-  { offset: 0.006, opacity: 0.30 },    // More visible
-  { offset: 0.010, opacity: 0.50 },    // Medium darkness
-  { offset: 0.016, opacity: 0.70 },    // Heavy darkness
-  { offset: 0.025, opacity: 0.85 },    // Near-opaque
-  { offset: 0.050, opacity: 0.95 },    // Outer region — nearly black
+  { offset: 0.0, opacity: 0.0 }, // Inner edge (transparent)
+  { offset: 0.003, opacity: 0.15 }, // Slight darkening
+  { offset: 0.006, opacity: 0.3 }, // More visible
+  { offset: 0.01, opacity: 0.5 }, // Medium darkness
+  { offset: 0.016, opacity: 0.7 }, // Heavy darkness
+  { offset: 0.025, opacity: 0.85 }, // Near-opaque
+  { offset: 0.05, opacity: 0.95 }, // Outer region — nearly black
 ] as const;
 
 interface FadeFeature {
@@ -95,8 +95,8 @@ export function createBoundaryFadeGeoJSON(): FadeFeatureCollection {
     const outerBounds = {
       north: FADE_AREA.north + outerRing.offset,
       south: FADE_AREA.south - outerRing.offset,
-      east: FADE_AREA.east + outerRing.offset,   // Add to expand east (longitude increases eastward)
-      west: FADE_AREA.west - outerRing.offset,    // Subtract to expand west (longitude decreases westward)
+      east: FADE_AREA.east + outerRing.offset, // Add to expand east (longitude increases eastward)
+      west: FADE_AREA.west - outerRing.offset, // Subtract to expand west (longitude decreases westward)
     };
 
     const innerBounds = {

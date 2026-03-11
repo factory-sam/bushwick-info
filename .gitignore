@@ -20,3 +20,8 @@ out/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test artifacts
+coverage/
+playwright-report/
+test-results/

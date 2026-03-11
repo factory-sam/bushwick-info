@@ -13,14 +13,14 @@ const VALID_CATEGORIES: PlaceCategory[] = [
 // Expanded Bushwick bounds per architecture docs
 const BOUNDS = {
   minLat: 40.68,
-  maxLat: 40.715,
+  maxLat: 40.72,
   minLng: -73.945,
   maxLng: -73.89,
 };
 
 describe("places data", () => {
-  it("exports exactly 21 curated places", () => {
-    expect(places).toHaveLength(21);
+  it("exports exactly 54 curated places", () => {
+    expect(places).toHaveLength(54);
   });
 
   it("every place has all required fields", () => {

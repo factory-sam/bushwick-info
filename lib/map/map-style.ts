@@ -9,8 +9,8 @@ import type { StyleSpecification, LayerSpecification } from "maplibre-gl";
 type LayerSpec = Record<string, any>;
 
 export const BUSHWICK_CENTER = {
-  latitude: 40.6944,
-  longitude: -73.9213,
+  latitude: 40.7007,
+  longitude: -73.9256,
 } as const;
 
 export const DEFAULT_VIEW_STATE = {
@@ -18,7 +18,7 @@ export const DEFAULT_VIEW_STATE = {
   longitude: BUSHWICK_CENTER.longitude,
   zoom: 15,
   pitch: 50,
-  bearing: -15,
+  bearing: 29,
 } as const;
 
 export const MAP_BOUNDS = {
@@ -26,8 +26,8 @@ export const MAP_BOUNDS = {
   maxZoom: 18,
   /** maxBounds restricts panning to greater Bushwick area. [lng, lat] format. */
   maxBounds: {
-    sw: [-73.950, 40.675] as readonly [number, number],
-    ne: [-73.885, 40.720] as readonly [number, number],
+    sw: [-73.95, 40.675] as readonly [number, number],
+    ne: [-73.885, 40.72] as readonly [number, number],
   },
 } as const;
 
@@ -367,7 +367,11 @@ function createTunnelLayers(): LayerSpec[] {
       id: "tunnel_service_track",
       type: "line",
       ...tunnelBase,
-      filter: ["all", ["==", ["get", "brunnel"], "tunnel"], ["match", ["get", "class"], ["service", "track"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "tunnel"],
+        ["match", ["get", "class"], ["service", "track"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue40,
@@ -378,7 +382,11 @@ function createTunnelLayers(): LayerSpec[] {
       id: "tunnel_minor",
       type: "line",
       ...tunnelBase,
-      filter: ["all", ["==", ["get", "brunnel"], "tunnel"], ["match", ["get", "class"], ["minor"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "tunnel"],
+        ["match", ["get", "class"], ["minor"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue40,
@@ -389,7 +397,11 @@ function createTunnelLayers(): LayerSpec[] {
       id: "tunnel_secondary_tertiary",
       type: "line",
       ...tunnelBase,
-      filter: ["all", ["==", ["get", "brunnel"], "tunnel"], ["match", ["get", "class"], ["secondary", "tertiary"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "tunnel"],
+        ["match", ["get", "class"], ["secondary", "tertiary"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue,
@@ -400,7 +412,11 @@ function createTunnelLayers(): LayerSpec[] {
       id: "tunnel_trunk_primary",
       type: "line",
       ...tunnelBase,
-      filter: ["all", ["==", ["get", "brunnel"], "tunnel"], ["match", ["get", "class"], ["primary", "trunk"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "tunnel"],
+        ["match", ["get", "class"], ["primary", "trunk"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.nervOrange,
@@ -411,7 +427,12 @@ function createTunnelLayers(): LayerSpec[] {
       id: "tunnel_motorway",
       type: "line",
       ...tunnelBase,
-      filter: ["all", ["==", ["get", "class"], "motorway"], ["!=", ["get", "ramp"], 1], ["==", ["get", "brunnel"], "tunnel"]],
+      filter: [
+        "all",
+        ["==", ["get", "class"], "motorway"],
+        ["!=", ["get", "ramp"], 1],
+        ["==", ["get", "brunnel"], "tunnel"],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.nervOrange,
@@ -433,7 +454,11 @@ function createRoadLayers(): LayerSpec[] {
       id: "road_service_track_casing",
       type: "line",
       ...roadBase,
-      filter: ["all", ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true], ["match", ["get", "class"], ["service", "track"], true, false]],
+      filter: [
+        "all",
+        ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
+        ["match", ["get", "class"], ["service", "track"], true, false],
+      ],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": COLORS.darkRoadCasing,
@@ -455,7 +480,19 @@ function createRoadLayers(): LayerSpec[] {
       paint: {
         "line-color": COLORS.darkRoadCasing,
         "line-opacity": ["interpolate", ["linear"], ["zoom"], 12, 0, 12.5, 1],
-        "line-width": ["interpolate", ["exponential", 1.2], ["zoom"], 12, 0.5, 13, 1, 14, 4, 20, 20],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          12,
+          0.5,
+          13,
+          1,
+          14,
+          4,
+          20,
+          20,
+        ],
       },
     },
     {
@@ -486,7 +523,19 @@ function createRoadLayers(): LayerSpec[] {
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.darkRoadCasing,
-        "line-width": ["interpolate", ["exponential", 1.2], ["zoom"], 5, 0.4, 6, 0.7, 7, 1.75, 20, 22],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          5,
+          0.4,
+          6,
+          0.7,
+          7,
+          1.75,
+          20,
+          22,
+        ],
       },
     },
     {
@@ -503,7 +552,19 @@ function createRoadLayers(): LayerSpec[] {
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": COLORS.darkRoadCasing,
-        "line-width": ["interpolate", ["exponential", 1.2], ["zoom"], 5, 0.4, 6, 0.7, 7, 1.75, 20, 22],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          5,
+          0.4,
+          6,
+          0.7,
+          7,
+          1.75,
+          20,
+          22,
+        ],
       },
     },
 
@@ -530,7 +591,11 @@ function createRoadLayers(): LayerSpec[] {
       id: "road_service_track",
       type: "line",
       ...roadBase,
-      filter: ["all", ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true], ["match", ["get", "class"], ["service", "track"], true, false]],
+      filter: [
+        "all",
+        ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
+        ["match", ["get", "class"], ["service", "track"], true, false],
+      ],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue40,
@@ -546,12 +611,30 @@ function createRoadLayers(): LayerSpec[] {
         "all",
         ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
         ["==", ["get", "ramp"], 1],
-        ["match", ["get", "class"], ["motorway", "path", "pedestrian", "service", "track"], false, true],
+        [
+          "match",
+          ["get", "class"],
+          ["motorway", "path", "pedestrian", "service", "track"],
+          false,
+          true,
+        ],
       ],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue,
-        "line-width": ["interpolate", ["exponential", 1.2], ["zoom"], 12.5, 0, 13, 1.5, 14, 2.5, 20, 11.5],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          12.5,
+          0,
+          13,
+          1.5,
+          14,
+          2.5,
+          20,
+          11.5,
+        ],
       },
     },
     {
@@ -631,7 +714,19 @@ function createRoadLayers(): LayerSpec[] {
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
         "line-color": COLORS.nervOrange,
-        "line-width": ["interpolate", ["exponential", 1.2], ["zoom"], 12.5, 0, 13, 1.5, 14, 2.5, 20, 11.5],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          12.5,
+          0,
+          13,
+          1.5,
+          14,
+          2.5,
+          20,
+          11.5,
+        ],
       },
     },
   ];
@@ -648,7 +743,11 @@ function createBridgeLayers(): LayerSpec[] {
       id: "bridge_service_track",
       type: "line",
       ...bridgeBase,
-      filter: ["all", ["==", ["get", "brunnel"], "bridge"], ["match", ["get", "class"], ["service", "track"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "bridge"],
+        ["match", ["get", "class"], ["service", "track"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue40,
@@ -659,7 +758,11 @@ function createBridgeLayers(): LayerSpec[] {
       id: "bridge_street",
       type: "line",
       ...bridgeBase,
-      filter: ["all", ["==", ["get", "brunnel"], "bridge"], ["match", ["get", "class"], ["minor"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "bridge"],
+        ["match", ["get", "class"], ["minor"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue40,
@@ -670,7 +773,11 @@ function createBridgeLayers(): LayerSpec[] {
       id: "bridge_secondary_tertiary",
       type: "line",
       ...bridgeBase,
-      filter: ["all", ["==", ["get", "brunnel"], "bridge"], ["match", ["get", "class"], ["secondary", "tertiary"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "bridge"],
+        ["match", ["get", "class"], ["secondary", "tertiary"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.magiBlue,
@@ -681,7 +788,11 @@ function createBridgeLayers(): LayerSpec[] {
       id: "bridge_trunk_primary",
       type: "line",
       ...bridgeBase,
-      filter: ["all", ["==", ["get", "brunnel"], "bridge"], ["match", ["get", "class"], ["primary", "trunk"], true, false]],
+      filter: [
+        "all",
+        ["==", ["get", "brunnel"], "bridge"],
+        ["match", ["get", "class"], ["primary", "trunk"], true, false],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.nervOrange,
@@ -692,7 +803,12 @@ function createBridgeLayers(): LayerSpec[] {
       id: "bridge_motorway",
       type: "line",
       ...bridgeBase,
-      filter: ["all", ["==", ["get", "class"], "motorway"], ["!=", ["get", "ramp"], 1], ["==", ["get", "brunnel"], "bridge"]],
+      filter: [
+        "all",
+        ["==", ["get", "class"], "motorway"],
+        ["!=", ["get", "ramp"], 1],
+        ["==", ["get", "brunnel"], "bridge"],
+      ],
       layout: { "line-join": "round" },
       paint: {
         "line-color": COLORS.nervOrange,
@@ -713,7 +829,11 @@ function createRailLayers(): LayerSpec[] {
       id: "road_major_rail",
       type: "line",
       ...railBase,
-      filter: ["all", ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true], ["==", ["get", "class"], "rail"]],
+      filter: [
+        "all",
+        ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
+        ["==", ["get", "class"], "rail"],
+      ],
       paint: {
         "line-color": COLORS.railColor,
         "line-width": ["interpolate", ["exponential", 1.4], ["zoom"], 14, 0.4, 15, 0.75, 20, 2],
@@ -723,7 +843,11 @@ function createRailLayers(): LayerSpec[] {
       id: "road_major_rail_hatching",
       type: "line",
       ...railBase,
-      filter: ["all", ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true], ["==", ["get", "class"], "rail"]],
+      filter: [
+        "all",
+        ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
+        ["==", ["get", "class"], "rail"],
+      ],
       paint: {
         "line-color": COLORS.railColor,
         "line-dasharray": [0.2, 8],
@@ -734,7 +858,11 @@ function createRailLayers(): LayerSpec[] {
       id: "road_transit_rail",
       type: "line",
       ...railBase,
-      filter: ["all", ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true], ["==", ["get", "class"], "transit"]],
+      filter: [
+        "all",
+        ["match", ["get", "brunnel"], ["bridge", "tunnel"], false, true],
+        ["==", ["get", "class"], "transit"],
+      ],
       paint: {
         "line-color": COLORS.railColor,
         "line-width": ["interpolate", ["exponential", 1.4], ["zoom"], 14, 0.4, 15, 0.75, 20, 2],
@@ -802,7 +930,13 @@ function createLabelLayers(): LayerSpec[] {
       source: "openmaptiles",
       "source-layer": "transportation_name",
       minzoom: 12.2,
-      filter: ["match", ["get", "class"], ["primary", "secondary", "tertiary", "trunk"], true, false],
+      filter: [
+        "match",
+        ["get", "class"],
+        ["primary", "secondary", "tertiary", "trunk"],
+        true,
+        false,
+      ],
       layout: {
         "symbol-placement": "line",
         "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
@@ -825,7 +959,13 @@ function createLabelLayers(): LayerSpec[] {
       source: "openmaptiles",
       "source-layer": "place",
       minzoom: 8,
-      filter: ["match", ["get", "class"], ["city", "continent", "country", "state", "town", "village"], false, true],
+      filter: [
+        "match",
+        ["get", "class"],
+        ["city", "continent", "country", "state", "town", "village"],
+        false,
+        true,
+      ],
       layout: {
         "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
         "text-font": labelFont,

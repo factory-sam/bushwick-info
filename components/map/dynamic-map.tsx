@@ -14,6 +14,10 @@ const MapView = dynamic(() => import("./map-view"), {
   ),
 });
 
-export default function DynamicMap(props: MapViewProps) {
-  return <MapView {...props} />;
+interface DynamicMapProps extends MapViewProps {
+  initialPlaceId?: string | null;
+}
+
+export default function DynamicMap({ initialPlaceId, ...props }: DynamicMapProps) {
+  return <MapView {...props} initialPlaceId={initialPlaceId} />;
 }

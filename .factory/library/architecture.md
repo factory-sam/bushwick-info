@@ -31,6 +31,7 @@ Architectural decisions, patterns, and conventions discovered during the mission
 ## Responsive Dual-Panel Pattern
 
 The detail panel uses a dual-render approach for mobile vs desktop:
+
 - Mobile (`md:hidden`): bottom sheet with slide-up animation
 - Desktop (`hidden md:block`): side panel with slide-in animation
 - A shared `DetailContent` component avoids content duplication

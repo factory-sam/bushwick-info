@@ -1,13 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  MAP_BOUNDS,
-  BUSHWICK_CENTER,
-} from "../map-style";
-import {
-  FADE_AREA,
-  createBoundaryFadeGeoJSON,
-  FADE_RINGS,
-} from "../map-bounds";
+import { MAP_BOUNDS, BUSHWICK_CENTER } from "../map-style";
+import { FADE_AREA, createBoundaryFadeGeoJSON, FADE_RINGS } from "../map-bounds";
 
 describe("MAP_BOUNDS maxBounds", () => {
   it("has maxBounds defined with sw and ne corners", () => {
@@ -30,9 +23,9 @@ describe("MAP_BOUNDS maxBounds", () => {
     const { sw, ne } = MAP_BOUNDS.maxBounds;
     // SW: [lng, lat]
     expect(sw[1]).toBeCloseTo(40.675, 1); // South ~40.675
-    expect(sw[0]).toBeCloseTo(-73.950, 1); // West ~-73.950
+    expect(sw[0]).toBeCloseTo(-73.95, 1); // West ~-73.950
     // NE: [lng, lat]
-    expect(ne[1]).toBeCloseTo(40.720, 1); // North ~40.720
+    expect(ne[1]).toBeCloseTo(40.72, 1); // North ~40.720
     expect(ne[0]).toBeCloseTo(-73.885, 1); // East ~-73.885
   });
 });
@@ -48,8 +41,8 @@ describe("FADE_AREA", () => {
 
   it("highlighted area covers Bushwick + neighboring areas", () => {
     expect(FADE_AREA.north).toBeCloseTo(40.715, 2);
-    expect(FADE_AREA.south).toBeCloseTo(40.680, 2);
-    expect(FADE_AREA.east).toBeCloseTo(-73.890, 2);
+    expect(FADE_AREA.south).toBeCloseTo(40.68, 2);
+    expect(FADE_AREA.east).toBeCloseTo(-73.89, 2);
     expect(FADE_AREA.west).toBeCloseTo(-73.945, 2);
   });
 

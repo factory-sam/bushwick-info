@@ -1,6 +1,6 @@
 ---
 name: ui-worker
-description: Handles EVA UI chrome, styling, animations, responsive design, and visual polish
+description: Handles cyberpunk UI chrome, styling, animations, responsive design, and visual polish
 ---
 
 # UI Worker
@@ -10,8 +10,9 @@ NOTE: Startup and cleanup are handled by `worker-base`. This skill defines the W
 ## When to Use This Skill
 
 Use for features involving:
-- EVA/NERV UI chrome components (scanlines, vignette, header, panels)
-- Tailwind CSS configuration with EVA theme
+
+- Cyberpunk UI chrome components (scanlines, vignette, header, panels)
+- Tailwind CSS configuration with cyberpunk theme
 - Framer Motion animations
 - Responsive design and mobile adaptation
 - Visual polish and post-processing effects
@@ -81,25 +82,44 @@ Use for features involving:
   "whatWasLeftUndone": "",
   "verification": {
     "commandsRun": [
-      { "command": "pnpm test", "exitCode": 0, "observation": "8 tests passing: scanline-render, vignette-render, header-render, header-has-title, readout-render, readout-updates, pointer-events-none-scanline, pointer-events-none-vignette" },
+      {
+        "command": "pnpm test",
+        "exitCode": 0,
+        "observation": "8 tests passing: scanline-render, vignette-render, header-render, header-has-title, readout-render, readout-updates, pointer-events-none-scanline, pointer-events-none-vignette"
+      },
       { "command": "pnpm build", "exitCode": 0, "observation": "Build successful" }
     ],
     "interactiveChecks": [
-      { "action": "Navigated to http://localhost:3100 with agent-browser at 1280x800", "observed": "Scanlines visible as subtle horizontal lines. Vignette darkens screen edges. Header panel at top with 'BUSHWICK // MAP' in Orbitron, orange neon glow border, clipped corners. Readout panel in bottom-left showing coordinates and zoom level in green monospace." },
-      { "action": "Clicked and dragged the map through the scanline overlay", "observed": "Map panned successfully — pointer events pass through scanlines and vignette." },
-      { "action": "Resized viewport to 375px width", "observed": "Header panel compressed to single line. Readout panel moved to bottom center with smaller font. Map still fills viewport." }
+      {
+        "action": "Navigated to http://localhost:3100 with agent-browser at 1280x800",
+        "observed": "Scanlines visible as subtle horizontal lines. Vignette darkens screen edges. Header panel at top with 'BUSHWICK // MAP' in Orbitron, orange neon glow border, clipped corners. Readout panel in bottom-left showing coordinates and zoom level in green monospace."
+      },
+      {
+        "action": "Clicked and dragged the map through the scanline overlay",
+        "observed": "Map panned successfully — pointer events pass through scanlines and vignette."
+      },
+      {
+        "action": "Resized viewport to 375px width",
+        "observed": "Header panel compressed to single line. Readout panel moved to bottom center with smaller font. Map still fills viewport."
+      }
     ]
   },
   "tests": {
     "added": [
-      { "file": "src/__tests__/components/ScanlineOverlay.test.tsx", "cases": [
-        { "name": "renders scanline overlay", "verifies": "component mounts" },
-        { "name": "has pointer-events-none", "verifies": "overlay doesn't block interaction" }
-      ]},
-      { "file": "src/__tests__/components/NervHeader.test.tsx", "cases": [
-        { "name": "renders header with title", "verifies": "title text present" },
-        { "name": "uses Orbitron font class", "verifies": "correct font applied" }
-      ]}
+      {
+        "file": "src/__tests__/components/ScanlineOverlay.test.tsx",
+        "cases": [
+          { "name": "renders scanline overlay", "verifies": "component mounts" },
+          { "name": "has pointer-events-none", "verifies": "overlay doesn't block interaction" }
+        ]
+      },
+      {
+        "file": "src/__tests__/components/NervHeader.test.tsx",
+        "cases": [
+          { "name": "renders header with title", "verifies": "title text present" },
+          { "name": "uses Orbitron font class", "verifies": "correct font applied" }
+        ]
+      }
     ]
   },
   "discoveredIssues": []

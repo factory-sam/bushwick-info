@@ -1,10 +1,12 @@
-/* Custom EVA theme styling for MapLibre NavigationControl */
+/* Custom cyberpunk theme styling for MapLibre NavigationControl */
 
 .maplibregl-ctrl-group {
   background: rgba(29, 29, 58, 0.85) !important;
-  border: 1px solid #F0903A !important;
+  border: 1px solid #f0903a !important;
   border-radius: 0 !important;
-  box-shadow: 0 0 5px rgba(240, 144, 58, 0.4), 0 0 10px rgba(240, 144, 58, 0.2) !important;
+  box-shadow:
+    0 0 5px rgba(240, 144, 58, 0.4),
+    0 0 10px rgba(240, 144, 58, 0.2) !important;
   clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   overflow: hidden;
 }
@@ -33,13 +35,15 @@
 
 /* Style the + and - icons */
 .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-  filter: brightness(0) saturate(100%) invert(58%) sepia(90%) saturate(392%) hue-rotate(336deg) brightness(95%) contrast(92%);
+  filter: brightness(0) saturate(100%) invert(58%) sepia(90%) saturate(392%) hue-rotate(336deg)
+    brightness(95%) contrast(92%);
 }
 
 /* Override zoom in/out button SVG fill */
 .maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon,
 .maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon {
-  filter: brightness(0) saturate(100%) invert(58%) sepia(90%) saturate(392%) hue-rotate(336deg) brightness(95%) contrast(92%);
+  filter: brightness(0) saturate(100%) invert(58%) sepia(90%) saturate(392%) hue-rotate(336deg)
+    brightness(95%) contrast(92%);
 }
 
 /* Attribution control styling */

@@ -263,7 +263,14 @@
       "description": "WebGL is unavailable in headless Chrome (SwiftShader Vulkan driver failure). MapLibre GL map instance is null — the map mounts DOM elements but cannot initialize its WebGL painter. This prevents all tile loading, rendering, and control initialization.",
       "resolved": false,
       "resolution": "Verified map configuration via React component props and map style JSON instead of runtime map state. All assertions are blocked for visual rendering but configuration is confirmed correct.",
-      "affectedAssertions": ["VAL-MAP-001", "VAL-MAP-002", "VAL-MAP-003", "VAL-MAP-004", "VAL-MAP-005", "VAL-MAP-006"]
+      "affectedAssertions": [
+        "VAL-MAP-001",
+        "VAL-MAP-002",
+        "VAL-MAP-003",
+        "VAL-MAP-004",
+        "VAL-MAP-005",
+        "VAL-MAP-006"
+      ]
     },
     {
       "description": "NavigationControl zoom buttons did not render in DOM because they depend on a functioning map instance. The maplibregl-ctrl-bottom-right container exists but is empty.",
@@ -275,7 +282,14 @@
   "blockers": [
     {
       "description": "WebGL context creation fails in headless Chrome: 'Could not create a WebGL context, VENDOR = 0xffff, DEVICE = 0xffff, GL_VENDOR = Google Inc. (Google), GL_RENDERER = ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device), SwiftShader driver-5.0.0)'. MapLibre GL JS requires WebGL to initialize the map. The map instance (accessed via react-map-gl internal state) is null.",
-      "affectedAssertions": ["VAL-MAP-001", "VAL-MAP-002", "VAL-MAP-003", "VAL-MAP-004", "VAL-MAP-005", "VAL-MAP-006"],
+      "affectedAssertions": [
+        "VAL-MAP-001",
+        "VAL-MAP-002",
+        "VAL-MAP-003",
+        "VAL-MAP-004",
+        "VAL-MAP-005",
+        "VAL-MAP-006"
+      ],
       "quickFixAttempted": "This is a known environment limitation documented in AGENTS.md. No fix possible without GPU/WebGL support in the testing environment. Used React props and map style JSON verification as alternative evidence."
     }
   ],

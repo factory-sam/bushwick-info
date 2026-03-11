@@ -10,6 +10,7 @@ NOTE: Startup and cleanup are handled by `worker-base`. This skill defines the W
 ## When to Use This Skill
 
 Use for features involving:
+
 - MapLibre GL JS setup and configuration
 - Custom map styles (dark/cyberpunk theme)
 - 3D building extrusions
@@ -22,7 +23,7 @@ Use for features involving:
 
 1. **Read context files first:**
    - Read `.factory/library/architecture.md` for map tech decisions (MapLibre v5, react-map-gl v8, OpenFreeMap)
-   - Read `.factory/library/eva-design.md` for EVA color palette and category marker colors
+   - Read `.factory/library/eva-design.md` for color palette and category marker colors
    - Read `.factory/library/environment.md` for external dependencies (OpenFreeMap URLs)
    - Read `.factory/services.yaml` for dev server commands
 
@@ -75,25 +76,50 @@ Use for features involving:
   "whatWasLeftUndone": "",
   "verification": {
     "commandsRun": [
-      { "command": "pnpm test", "exitCode": 0, "observation": "4 tests passing: style-util, coordinate-helpers, map-component-render, viewstate-defaults" },
+      {
+        "command": "pnpm test",
+        "exitCode": 0,
+        "observation": "4 tests passing: style-util, coordinate-helpers, map-component-render, viewstate-defaults"
+      },
       { "command": "pnpm build", "exitCode": 0, "observation": "Build successful" }
     ],
     "interactiveChecks": [
-      { "action": "Navigated to http://localhost:3100 with agent-browser", "observed": "Map loaded with dark purple background, 3D buildings visible at ~50° pitch, Bushwick streets visible with neon orange coloring" },
-      { "action": "Scrolled to zoom in to zoom 17", "observed": "Building detail increased, street labels readable in technical font, no tile loading errors" },
-      { "action": "Zoomed out to min zoom", "observed": "Map stopped at zoom 12, broader Bushwick area visible" }
+      {
+        "action": "Navigated to http://localhost:3100 with agent-browser",
+        "observed": "Map loaded with dark purple background, 3D buildings visible at ~50° pitch, Bushwick streets visible with neon orange coloring"
+      },
+      {
+        "action": "Scrolled to zoom in to zoom 17",
+        "observed": "Building detail increased, street labels readable in technical font, no tile loading errors"
+      },
+      {
+        "action": "Zoomed out to min zoom",
+        "observed": "Map stopped at zoom 12, broader Bushwick area visible"
+      }
     ]
   },
   "tests": {
     "added": [
-      { "file": "src/__tests__/utils/map-style.test.ts", "cases": [
-        { "name": "creates dark style with EVA colors", "verifies": "style generation uses correct hex values" },
-        { "name": "includes fill-extrusion layer for buildings", "verifies": "3D building layer present in style" }
-      ]},
-      { "file": "src/__tests__/components/MapView.test.tsx", "cases": [
-        { "name": "renders map container", "verifies": "map component mounts without errors" },
-        { "name": "uses correct default viewState", "verifies": "center on Bushwick with pitch" }
-      ]}
+      {
+        "file": "src/__tests__/utils/map-style.test.ts",
+        "cases": [
+          {
+            "name": "creates dark style with EVA colors",
+            "verifies": "style generation uses correct hex values"
+          },
+          {
+            "name": "includes fill-extrusion layer for buildings",
+            "verifies": "3D building layer present in style"
+          }
+        ]
+      },
+      {
+        "file": "src/__tests__/components/MapView.test.tsx",
+        "cases": [
+          { "name": "renders map container", "verifies": "map component mounts without errors" },
+          { "name": "uses correct default viewState", "verifies": "center on Bushwick with pitch" }
+        ]
+      }
     ]
   },
   "discoveredIssues": []

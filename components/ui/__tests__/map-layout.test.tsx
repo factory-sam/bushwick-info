@@ -17,7 +17,12 @@ vi.mock("../nerv-header", () => ({
 }));
 vi.mock("../data-readout", () => ({
   DataReadout: (props: { latitude: number; longitude: number; zoom: number }) => (
-    <div data-testid="data-readout" data-lat={props.latitude} data-lng={props.longitude} data-zoom={props.zoom} />
+    <div
+      data-testid="data-readout"
+      data-lat={props.latitude}
+      data-lng={props.longitude}
+      data-zoom={props.zoom}
+    />
   ),
 }));
 

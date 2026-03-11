@@ -66,7 +66,9 @@ vi.mock("motion/react", () => ({
 function filterMotionProps(props: Record<string, unknown>): Record<string, unknown> {
   const filtered: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(props)) {
-    if (!["initial", "animate", "exit", "transition", "whileHover", "whileTap", "key"].includes(key)) {
+    if (
+      !["initial", "animate", "exit", "transition", "whileHover", "whileTap", "key"].includes(key)
+    ) {
       filtered[key] = value;
     }
   }

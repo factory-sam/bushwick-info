@@ -10,17 +10,13 @@ export interface SearchBarProps {
 }
 
 /**
- * EVA-styled search bar with typeahead dropdown.
+ * Cyberpunk-styled search bar with typeahead dropdown.
  * Case-insensitive substring match on place name.
  * Results scoped to active category filters.
  * Clicking a result selects that place (opens detail panel, flies to marker).
  * Clear button (X) restores all markers.
  */
-export function SearchBar({
-  places,
-  activeCategories,
-  onSelectPlace,
-}: SearchBarProps) {
+export function SearchBar({ places, activeCategories, onSelectPlace }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -38,14 +34,11 @@ export function SearchBar({
     [query, places, activeCategories]
   );
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setQuery(e.target.value);
-      setIsOpen(true);
-      setHighlightedIndex(-1);
-    },
-    []
-  );
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setIsOpen(true);
+    setHighlightedIndex(-1);
+  }, []);
 
   const handleClear = useCallback(() => {
     setQuery("");
@@ -70,15 +63,11 @@ export function SearchBar({
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
-          setHighlightedIndex((prev) =>
-            prev < filteredResults.length - 1 ? prev + 1 : 0
-          );
+          setHighlightedIndex((prev) => (prev < filteredResults.length - 1 ? prev + 1 : 0));
           break;
         case "ArrowUp":
           e.preventDefault();
-          setHighlightedIndex((prev) =>
-            prev > 0 ? prev - 1 : filteredResults.length - 1
-          );
+          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredResults.length - 1));
           break;
         case "Enter":
           e.preventDefault();
@@ -99,10 +88,7 @@ export function SearchBar({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -166,8 +152,7 @@ export function SearchBar({
           style={{
             clipPath:
               "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))",
-            boxShadow:
-              "0 0 8px rgba(88, 242, 165, 0.15), 0 4px 20px rgba(0, 0, 0, 0.4)",
+            boxShadow: "0 0 8px rgba(88, 242, 165, 0.15), 0 4px 20px rgba(0, 0, 0, 0.4)",
           }}
         >
           {filteredResults.length > 0 ? (

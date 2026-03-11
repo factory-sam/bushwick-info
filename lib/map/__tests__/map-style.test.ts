@@ -101,18 +101,18 @@ describe("createDarkMapStyle", () => {
 
 describe("BUSHWICK_CENTER", () => {
   it("has correct latitude", () => {
-    expect(BUSHWICK_CENTER.latitude).toBe(40.6944);
+    expect(BUSHWICK_CENTER.latitude).toBe(40.7007);
   });
 
   it("has correct longitude", () => {
-    expect(BUSHWICK_CENTER.longitude).toBe(-73.9213);
+    expect(BUSHWICK_CENTER.longitude).toBe(-73.9256);
   });
 });
 
 describe("DEFAULT_VIEW_STATE", () => {
   it("has center on Bushwick", () => {
-    expect(DEFAULT_VIEW_STATE.latitude).toBe(40.6944);
-    expect(DEFAULT_VIEW_STATE.longitude).toBe(-73.9213);
+    expect(DEFAULT_VIEW_STATE.latitude).toBe(40.7007);
+    expect(DEFAULT_VIEW_STATE.longitude).toBe(-73.9256);
   });
 
   it("has zoom level 15", () => {
@@ -123,8 +123,8 @@ describe("DEFAULT_VIEW_STATE", () => {
     expect(DEFAULT_VIEW_STATE.pitch).toBe(50);
   });
 
-  it("has bearing ~-15", () => {
-    expect(DEFAULT_VIEW_STATE.bearing).toBe(-15);
+  it("has bearing ~29 to align grid horizontally", () => {
+    expect(DEFAULT_VIEW_STATE.bearing).toBe(29);
   });
 });
 
