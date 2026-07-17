@@ -566,9 +566,9 @@ export const places: Place[] = [
     description:
       "Underground nightclub and event space with cutting-edge electronic music and an intimate dancefloor.",
     category: "clubs",
-    address: "114 Knickerbocker Ave, Brooklyn, NY 11237",
-    lat: 40.7048,
-    lng: -73.929,
+    address: "175 Morgan Ave, Brooklyn, NY 11237",
+    lat: 40.7101,
+    lng: -73.9335,
     hours: "Fri–Sat 10 PM–6 AM",
   },
   {
@@ -631,17 +631,6 @@ export const places: Place[] = [
     website: "https://www.theysaythatbushwick.com",
   },
   // ── STORES (additional) ────────────────────────────────
-  {
-    id: "harlequin-vintage",
-    name: "Harlequin Vintage",
-    description:
-      "Curated vintage clothing shop with unique finds spanning decades of fashion history.",
-    category: "stores",
-    address: "136 Knickerbocker Ave, Brooklyn, NY 11237",
-    lat: 40.7045,
-    lng: -73.9286,
-    hours: "Daily 12 PM–8 PM",
-  },
   {
     id: "fronk",
     name: "Fronk",

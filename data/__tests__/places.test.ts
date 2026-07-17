@@ -19,8 +19,8 @@ const BOUNDS = {
 };
 
 describe("places data", () => {
-  it("exports exactly 54 curated places", () => {
-    expect(places).toHaveLength(54);
+  it("exports exactly 53 curated places", () => {
+    expect(places).toHaveLength(53);
   });
 
   it("every place has all required fields", () => {
