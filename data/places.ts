@@ -566,9 +566,9 @@ export const places: Place[] = [
     description:
       "Underground nightclub and event space with cutting-edge electronic music and an intimate dancefloor.",
     category: "clubs",
-    address: "114 Knickerbocker Ave, Brooklyn, NY 11237",
-    lat: 40.7048,
-    lng: -73.929,
+    address: "175 Morgan Ave, Brooklyn, NY 11237",
+    lat: 40.7101,
+    lng: -73.9335,
     hours: "Fri–Sat 10 PM–6 AM",
   },
   {
