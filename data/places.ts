@@ -632,17 +632,6 @@ export const places: Place[] = [
   },
   // ── STORES (additional) ────────────────────────────────
   {
-    id: "harlequin-vintage",
-    name: "Harlequin Vintage",
-    description:
-      "Curated vintage clothing shop with unique finds spanning decades of fashion history.",
-    category: "stores",
-    address: "136 Knickerbocker Ave, Brooklyn, NY 11237",
-    lat: 40.7045,
-    lng: -73.9286,
-    hours: "Daily 12 PM–8 PM",
-  },
-  {
     id: "fronk",
     name: "Fronk",
     description:
