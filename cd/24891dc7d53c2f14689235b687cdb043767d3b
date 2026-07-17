@@ -1,0 +1,19 @@
+data/places.ts
+  s_a5e3ce61b076b0::t_152b636c3d7c65 569-571
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "cd24891dc7d53c2f14689235b687cdb043767d3b",
+  "prompts": {},
+  "sessions": {
+    "s_a5e3ce61b076b0": {
+      "agent_id": {
+        "tool": "droid",
+        "id": "c17bbb2a-5dbd-4f8c-b8b4-eec6401f68da",
+        "model": "auto"
+      },
+      "human_author": "Sam Fitzgerald <sam@factory.ai>"
+    }
+  }
+}
