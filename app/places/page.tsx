@@ -1,10 +1,19 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
-import { motion } from "motion/react";
 import { places, CATEGORIES, type PlaceCategory } from "@/data/places";
 import { ScanlineOverlay } from "@/components/ui/scanline-overlay";
 import { VignetteOverlay } from "@/components/ui/vignette-overlay";
+
+export const metadata: Metadata = {
+  title: "Directory | Bushwick Map",
+  description:
+    "Explore 50+ curated places in Bushwick, Brooklyn — bars, restaurants, coffee shops, clubs, and stores.",
+  openGraph: {
+    title: "Bushwick Directory",
+    description: "Explore 50+ curated places in Bushwick, Brooklyn.",
+    url: "https://bushwick.info/places",
+  },
+};
 
 const CATEGORY_ORDER: PlaceCategory[] = [
   "bars",
@@ -47,12 +56,7 @@ export default function PlacesDirectory() {
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-8">
         {/* Header */}
-        <motion.header
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <header className="mb-8">
           <Link
             href="/"
             className="mb-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-nerv-green transition-colors hover:text-nerv-green/80"
@@ -76,23 +80,18 @@ export default function PlacesDirectory() {
               {places.length} LOCATIONS INDEXED
             </p>
           </div>
-        </motion.header>
+        </header>
 
         {/* Category Sections */}
         <div className="space-y-6">
-          {CATEGORY_ORDER.map((category, categoryIndex) => {
+          {CATEGORY_ORDER.map((category) => {
             const categoryPlaces = grouped[category];
             if (categoryPlaces.length === 0) return null;
 
             const info = CATEGORIES[category];
 
             return (
-              <motion.section
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: categoryIndex * 0.1 }}
-              >
+              <section key={category}>
                 {/* Category Header */}
                 <div
                   className="mb-3 flex items-center gap-3 border-b pb-2"
@@ -119,7 +118,7 @@ export default function PlacesDirectory() {
                   {categoryPlaces.map((place) => (
                     <li key={place.id}>
                       <Link
-                        href={`/?place=${place.id}`}
+                        href={`/places/${place.id}`}
                         className="group block rounded border border-white/10 bg-nerv-deep-purple/50 px-4 py-3 transition-all hover:border-nerv-orange/40 hover:bg-nerv-deep-purple/80"
                       >
                         <div className="flex items-start justify-between gap-4">
@@ -144,18 +143,13 @@ export default function PlacesDirectory() {
                     </li>
                   ))}
                 </ul>
-              </motion.section>
+              </section>
             );
           })}
         </div>
 
         {/* Footer */}
-        <motion.footer
-          className="mt-12 border-t border-white/10 pt-6 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.6 }}
-        >
+        <footer className="mt-12 border-t border-white/10 pt-6 text-center">
           <Link
             href="/"
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-nerv-green transition-colors hover:text-nerv-green/80"
@@ -163,7 +157,7 @@ export default function PlacesDirectory() {
             <span>←</span>
             <span>Return to Map</span>
           </Link>
-        </motion.footer>
+        </footer>
       </div>
     </main>
   );
